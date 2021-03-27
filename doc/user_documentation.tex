@@ -193,6 +193,26 @@ preceding command asking directly for it. It is used for events like incomming
 communication packets and periodic measuremnt data. The syntax is the same as
 for commands but no response is expected.
 
+\subsubsection{Boot}
+On boot an informational string will be written on the host interface with
+the following syntax
+
+\begin{verbatim}
+SWT21 lab kit
+Booting...
+Firmware version: <fw version>
+Boot reason: <reason>
+\end{verbatim}
+
+Reason may be due to several reasons
+\begin{itemize}
+\item Power on
+\item SW reset
+\item WDT reset
+\item Brownout
+\item OS Panic
+\item Unknown
+\end{itemize}
 
 \section{Firmware update}
 To update the firmware download and install the official flash download tool from

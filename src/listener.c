@@ -19,6 +19,7 @@ static const int uart = UART_NUM_0;
 
 /*******************************************************************************
  *
+ * May be called from other threads
  ******************************************************************************/
 void print_str(const char *format, ...)
 {
@@ -70,11 +71,13 @@ const char *get_reset_reason()
  ******************************************************************************/
 void listener_thread(void *parameters)
 {
+	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
+
 	/* Setup UART */
 
 	uart_config_t uart_config =
 	{
-		.baud_rate = 115200,
+		.baud_rate = 2000000,
 		.data_bits = UART_DATA_8_BITS,
 		.parity = UART_PARITY_DISABLE,
 		.stop_bits = UART_STOP_BITS_1,

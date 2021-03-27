@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdarg.h>
 
+#include "config.h"
 #include "listener.h"
 //#include "uart.h"
 

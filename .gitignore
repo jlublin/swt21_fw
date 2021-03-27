@@ -1,3 +1,4 @@
 CMakeLists.txt
 .pio/
 sdkconfig.old
+src/config.h

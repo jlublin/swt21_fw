@@ -1,0 +1,469 @@
+\documentclass{article}[a4paper]
+\usepackage{tcolorbox}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+
+\makeatletter
+\newcommand\subsubsubsection{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+\title{SWT21 lab kit \\ User manual}
+\author{Binäs Teknik AB}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\begin{comment}
+
+Använd ESP32 som HIL. Lägg till ett hårdvarukrestkort? LP-filter för analog-ut? (resistorstege?)
+CAN-kommunikation är svårt, möjligen två transceivrar mellan Teensy och ESP32.
+UART-kommunikation, LIN?
+Två ESP32 för att testa mot varandra resp. en ESP32 som HIL och testa av den andra. Kan även köra micropython.
+
+Med jumpers får vi med att ha koll på hårdvarukonfiguration.
+
+
+Vda kan vi vilja testa?
+
+
+
+All command and responses are '\\n'-terminated.
+<module> <command> [arguments]
+Max length
+
+Common commands:
+config set <parameter> <value> ...
+config get <parameter>
+
+Responses
+---------
+OK [data]
+ERR <reason>
+
+ERR Invalid command
+
+ADC commands
+------------
+ADC<n> off
+ADC<n> single
+ADC<n> periodic <period (us)> [offset (us)]
+ADC<n> status                      - OK ADC<n> status: <off/single/periodic <period> <offset>>
+ADC<n> config set raw
+ADC<n> config get raw              - OK ADC<n> raw: [on/off]
+ADC<n> config set range <low> <high>
+ADC<n> config get range            - OK ADC<n> range: <low> <high>
+ADC<n> config timestamp <off/on>
+
+Unsolicited ADC commands
+------------------------
+ADC<n> value [timestamp] <value>
+
+DAC commands
+------------
+DAC<n> voltage
+DAC<n> raw
+DAC<n> config set range <low> <high>
+DAC<n> config get range <low> <high>
+pwm?
+
+UART commands
+-------------
+UART<n> send <length>
+UART<n>
+UART<n> config set baudrate <baudrate>
+UART<n> config get baudrate
+UART<n> config set format <format>     - e.g. 8n1
+UART<n> config get format
+
+UART config parameters
+----------------------
+baudrate - <baudrate int32>
+format - <format string> <bits><n|o|p><1|2>, e.g. 8n1 for 8 bits, no parity and 1 stop bit
+
+Unsolicited UART commands
+-------------------------
+UART<n> overrun error <n>
+UART<n> underrun error <n>
+UART<n> framing error <n>
+UART<n> parity error <n>
+
+\end{comment}
+
+\section{General}
+
+The SWT21 lab kit allows communication and measurements using a single
+microcontroller with a carrier board. The lab kit runs a firmware allowing a
+computer to be connected as host which can then control the lab kit using the
+host interface. This allows us to inspect network communication, interact with
+hardware, etc. from the host computer.
+
+The general connectivity of the lab kit is
+
+\medskip
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{2cm}|p{1.5cm}|p{7cm}|}
+\hline
+test & test & Comment \\
+\hline
+WiFi & spec? & AP mode and STA mode \\
+\hline
+Bluetooth & 4.2? & \\
+\hline
+CAN & 2.0 & Only standard ID:s, 120 $\Omega$ termination via jumper configuration \\
+\hline
+LIN & 2.0 & Master or slave via jumper configuration \\
+\hline
+UART & & 3.3V maximum 2 Mbit/s, configurable 1-2 stop bits and parity bit \\
+\hline
+ADC & 2x & 0-3 V or 0-30 V via jumper configuration \\
+\hline
+DAC & 2x & 0-3 V or 0-12 V via jumper configuration (0-12 V) requires external power supply)\\
+\hline
+\end{tabular}
+
+
+\subsection{Syntax rules}
+The syntax used for commands in this manual is as follows
+
+\begin{itemize}
+\item <text> - indicates option to be replaced by other text
+\item{[text] - optional argument to be replaced by other text if used}
+\item{[text]... or <text>... - indicates multiple arguments may be used}
+\item \{a|b\} - means either a or b may be used
+\end{itemize}
+
+
+\section{Host interface}
+%configuration
+%what is unsolicited commands
+%syntax
+
+The device is connected to a computer via USB. This connection provides a
+USB-UART interface which presents itself as a serial port on the computer.
+
+The communication parameters are:
+\begin{itemize}
+\item Baudrate: 2 Mbit/s
+\item Stopbits: 1
+\item Parity: None
+\end{itemize}
+
+\subsection{System requirements}
+
+Windows driver, linux kernel, etc...
+
+\subsection{Protocol}
+
+The communication interface uses text-based communication where each line is a
+command or a response. Each line may be up to 255 bytes and ends with a new
+line control character
+(\textbackslash n). Other control characters will be ignored. The format of
+the commands is as follows:
+\begin{verbatim}
+<module> <command> [arguments]...
+e.g.: CAN config filter1 1f0 f70
+\end{verbatim}
+
+Responses can either be acknowledged with an
+\begin{verbatim}
+OK [data]
+\end{verbatim}
+, where data is any optional data returned by the command, or an error:
+\begin{verbatim}
+ERR <reason>
+\end{verbatim}
+
+Unsolicited commands are events sent from the lab kit to the host without a
+preceding command asking directly for it. It is used for events like incomming
+communication packets and periodic measuremnt data. The syntax is the same as
+for commands but no response is expected.
+
+
+\section{Firmware update}
+To update the firmware download and install the official flash download tool from
+\url{https://www.espressif.com/en/support/download/other-tools}
+
+Steps:
+\begin{enumerate}
+\item
+\item
+\end{enumerate}
+
+\section{CAN}
+The CAN bus can be used to send and recive 11-bit ID CAN frames.
+When sending frames they can either be sent as single frames or as periodic
+frames. Single frames are enqueued on the transmit buffer immediately after a
+"CAN send" command has been sent. Periodic frames stores the frame data and
+configuration in one
+of eight periodic frame buffers. When enabled the periodic frame buffers will
+send its payload periodically according to its configuration.
+
+
+\subsection{CAN commands}
+\subsubsection{CAN status}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	CAN status
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command returns the current status of the CAN subsystem.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK <rx on> <err frame count>
+	\medskip \\
+	{\it rx on} - the state of receiving CAN frames. \\
+	{\it err frame count} - the total number of CAN errors received.
+\end{tcolorbox}
+
+\subsubsection{CAN rx}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	CAN rx \{on|off\}
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command enables or disables receiving CAN frames
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK
+\end{tcolorbox}
+
+\subsubsection{CAN send}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	CAN send <can\_id>\#\{R|data\}
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command sends a single CAN frame on the CAN bus. On insufficient CAN
+	memory it will return an overflow error.
+	\medskip \\
+	{\it can\_id} - the CAN ID in hexadecimal \\
+	{\it R} - represents a remote frame \\
+	{\it data} - is the frame data in hexadecimal
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	ERR Invalid argument \\
+	ERR Overflow
+\end{tcolorbox}
+
+\subsubsection{CAN config}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	CAN config <config key> <arg>...
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command sets the configuration values of the CAN subsystem.
+	Leaving out an argument returns the current value(s) with the same argument
+	format.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	OK <value>... \\
+	ERR Invalid argument
+\end{tcolorbox}
+
+\subsubsubsection{CAN config baudrate}
+\begin{tcolorbox}
+	{\bf Config key}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	baudrate
+
+	\medskip
+	{\bf Arguments}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	<baudrate> - CAN baudrate in bits/s (e.g. 125000)
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This configuration sets the CAN baudrate.
+\end{tcolorbox}
+
+\subsubsubsection{CAN config filter<n>}
+\begin{tcolorbox}
+	{\bf Config key}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	filter0 \\
+	filter1
+
+	\medskip
+	{\bf Arguments}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	<filter> <mask> \\
+	<filter> - Filter value in hexadecimal (e.g. 3de)
+	<mask> - Filter mask in hexadecimal (e.g. 7ff)
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This configuration sets the values used by the acceptance filters.
+\end{tcolorbox}
+
+% TODO ########################### TODO ############### TODO ##############
+periodic send with some storage buffers? add can tx {on|off} for periodic
+
+\subsection{Unsolicited CAN commands}
+
+\subsubsection{CAN frame}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	CAN frame <can\_id>\#\{R|data\}
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command is sent when the system receives a CAN frame including its data
+	\medskip \\
+	{\it can\_id} - the CAN ID in hexadecimal \\
+	{\it R} - represents a remote frame \\
+	{\it data} - is the frame data in hexadecimal
+\end{tcolorbox}
+
+\subsubsection{CAN error frame}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	CAN errframe <flag>
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command is sent when the system receives a CAN error frame
+	\medskip \\
+	{\it flag} - the error flag
+\end{tcolorbox}
+
+
+% ????????????????????? CAN rx\_overflow <n>
+
+\begin{comment}
+
+\section{LIN}
+LIN commands
+------------
+LIN send <id>
+LIN set txbuffer <n> <data>     - empty <data> disables TX buffer
+
+Unsolicited commands:
+LIN frame
+error?
+
+\end{comment}
+
+\section{Command overview}
+\begin{verbatim}
+All command and responses are '\\n'-terminated.
+<module> <command> [arguments]
+Max length
+
+Common commands:
+config set <parameter> <value> ...
+config get <parameter>
+
+Responses
+---------
+OK [data]
+ERR <reason>
+
+ERR Invalid command
+
+ADC commands
+------------
+ADC<n> off
+ADC<n> single
+ADC<n> periodic <period (us)> [offset (us)]
+ADC<n> status
+    - OK ADC<n> status: <off/single/periodic <period> <offset>>
+
+ADC<n> config set raw
+ADC<n> config get raw              - OK ADC<n> raw: [on/off]
+ADC<n> config set range <low> <high>
+ADC<n> config get range            - OK ADC<n> range: <low> <high>
+ADC<n> config timestamp <off/on>
+
+Unsolicited ADC commands
+------------------------
+ADC<n> value [timestamp] <value>
+
+DAC commands
+------------
+DAC<n> voltage
+DAC<n> raw
+DAC<n> config set range <low> <high>
+DAC<n> config get range <low> <high>
+pwm?
+
+UART commands
+-------------
+UART<n> send <length>
+UART<n>
+UART<n> config set baudrate <baudrate>
+UART<n> config get baudrate
+UART<n> config set format <format>     - e.g. 8n1
+UART<n> config get format
+
+UART config parameters
+----------------------
+baudrate - <baudrate int32>
+format - <format string> <bits><n|o|p><1|2>
+    e.g. 8n1 for 8 bits, no parity and 1 stop bit
+
+Unsolicited UART commands
+-------------------------
+UART<n> overrun error <n>
+UART<n> underrun error <n>
+UART<n> framing error <n>
+UART<n> parity error <n>
+\end{verbatim}
+
+
+\end{document}

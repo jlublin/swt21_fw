@@ -6,6 +6,7 @@
 
 #include "listener.h"
 #include "uart.h"
+#include "periodic.h"
 
 static const char *TAG = "main";
 
@@ -25,12 +26,12 @@ int app_main()
 	}
 	ESP_ERROR_CHECK(ret);
 
-	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 5, NULL, 0);
-//	xTaskCreatePinnedToCore(&periodic_thread, "periodic", 2048, NULL, 5, NULL, 0);
+	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 4, NULL, 0);
+	xTaskCreatePinnedToCore(&periodic_thread, "periodic", 10000, NULL, 5, NULL, 0);
 
 	struct uart_thread_parameters uart_parameters = { .uart = 1 };
-	xTaskCreatePinnedToCore(&uart_thread, "uart", 2048, &uart_parameters,
-	                        4, NULL, 0);
+	xTaskCreatePinnedToCore(&uart_thread, "uart", 10000, &uart_parameters,
+	                        3, NULL, 0);
 
 
 	while(1)

@@ -14,7 +14,6 @@
 
 static void listener_line_handler(char *line);
 
-static const char *TAG = "listener";
 static const int uart = UART_NUM_0;
 
 /*******************************************************************************
@@ -90,8 +89,8 @@ void listener_thread(void *parameters)
 	const char *reset_reason = get_reset_reason();
 
 	printf("SWT21 lab kit\nBooting...\n");
-	printf("Firmware version: %s\n", "0.1");
-	printf("Source code revision: %s\n", "");
+	printf("Firmware version: %s\n", GIT_TAG);
+	printf("Source code revision: %s\n", GIT_REV);
 	printf("Reset reason: %s\n", reset_reason);
 
 	/* Start listener */

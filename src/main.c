@@ -8,10 +8,6 @@
 #include "uart.h"
 #include "periodic.h"
 
-static const char *TAG = "main";
-
-#define DATA_SIZE 1024
-
 /* Firmware main, sets up running threads */
 int app_main()
 {

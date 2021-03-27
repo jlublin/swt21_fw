@@ -36,6 +36,38 @@ void print_str(const char *format, ...)
 /*******************************************************************************
  *
  ******************************************************************************/
+const char *get_reset_reason()
+{
+	esp_reset_reason_t reason = esp_reset_reason();
+	const char *reason_str;
+
+	if(reason == ESP_RST_POWERON)
+		reason_str = "Power on";
+
+	else if(reason == ESP_RST_SW)
+		reason_str = "SW reset";
+
+	else if(reason == ESP_RST_PANIC)
+		reason_str = "OS panic";
+
+	else if(reason == ESP_RST_INT_WDT ||
+	        reason == ESP_RST_TASK_WDT ||
+	        reason == ESP_RST_WDT)
+		reason_str = "WDT reset";
+
+	else if(reason == ESP_RST_BROWNOUT)
+		reason_str = "Brownout";
+
+	else
+		reason_str = "Unknown";
+
+	return reason_str;
+}
+
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
 void listener_thread(void *parameters)
 {
 	/* Setup UART */
@@ -52,10 +84,14 @@ void listener_thread(void *parameters)
 	uart_param_config(uart, &uart_config);
     uart_driver_install(uart, 1024 * 2, 0, 0, NULL, 0);
 
-	/* Start listener */
-	ESP_LOGI(TAG, "\nStarting listener thread");
-	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
+	const char *reset_reason = get_reset_reason();
 
+	printf("SWT21 lab kit\nBooting...\n");
+	printf("Firmware version: %s\n", "0.1");
+	printf("Source code revision: %s\n", "");
+	printf("Reset reason: %s\n", reset_reason);
+
+	/* Start listener */
 	const int buffer_size = 256;
 
 	char line[buffer_size];

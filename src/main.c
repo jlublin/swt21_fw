@@ -5,6 +5,7 @@
 #include <esp_task_wdt.h>
 
 #include "listener.h"
+#include "uart.h"
 
 static const char *TAG = "main";
 
@@ -26,6 +27,11 @@ int app_main()
 
 	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 5, NULL, 0);
 //	xTaskCreatePinnedToCore(&periodic_thread, "periodic", 2048, NULL, 5, NULL, 0);
+
+	struct uart_thread_parameters uart_parameters = { .uart = 1 };
+	xTaskCreatePinnedToCore(&uart_thread, "uart", 2048, &uart_parameters,
+	                        4, NULL, 0);
+
 
 	while(1)
 	{

@@ -179,6 +179,13 @@ OK [data]
 ERR <reason>
 \end{verbatim}
 
+General errors:
+\begin{itemize}
+\item ERR Invalid command
+\item ERR Invalid arguments
+\item ERR Command too long
+\end{itemize}
+
 Unsolicited commands are events sent from the lab kit to the host without a
 preceding command asking directly for it. It is used for events like incomming
 communication packets and periodic measuremnt data. The syntax is the same as
@@ -223,7 +230,7 @@ send its payload periodically according to its configuration.
 	{\bf Return values}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	OK <rx on> <err frame count>
+	OK CAN status: <rx on> <err frame count>
 	\medskip \\
 	{\it rx on} - the state of receiving CAN frames. \\
 	{\it err frame count} - the total number of CAN errors received.
@@ -401,13 +408,13 @@ error?
 
 \section{Command overview}
 \begin{verbatim}
-All command and responses are '\\n'-terminated.
-<module> <command> [arguments]
-Max length
+All command and responses are '\n'-terminated.
+<module> <command> [arguments]...
+Max length: 255 bytes
 
 Common commands:
-config set <parameter> <value> ...
-config get <parameter>
+config <parameter> <value>... - set value(s)
+config <parameter>            - get value(s)
 
 Responses
 ---------
@@ -416,6 +423,27 @@ ERR <reason>
 
 ERR Invalid command
 
+CAN commands
+------------
+CAN status
+    - OK CAN status: <rx on> <err frame count>
+
+CAN rx {on|off}
+CAN send <can_id>#{R|data}
+
+CAN config parameters
+---------------------
+baudrate - (integer) baudrate
+filter0 - (32-bit hex) filter, (32-bit hex) mask
+filter1 - (32-bit hex) filter, (32-bit hex) mask
+
+Unsolicited CAN commands
+------------------------
+CAN frame <can_id>#{R|data}
+CAN errframe <flag>
+\end{verbatim}
+
+\begin{comment}
 ADC commands
 ------------
 ADC<n> off
@@ -424,10 +452,10 @@ ADC<n> periodic <period (us)> [offset (us)]
 ADC<n> status
     - OK ADC<n> status: <off/single/periodic <period> <offset>>
 
-ADC<n> config set raw
-ADC<n> config get raw              - OK ADC<n> raw: [on/off]
-ADC<n> config set range <low> <high>
-ADC<n> config get range            - OK ADC<n> range: <low> <high>
+ADC<n> config raw
+ADC<n> config raw              - OK ADC<n> raw: [on/off]
+ADC<n> config range <low> <high>
+ADC<n> config range            - OK ADC<n> range: <low> <high>
 ADC<n> config timestamp <off/on>
 
 Unsolicited ADC commands
@@ -438,18 +466,18 @@ DAC commands
 ------------
 DAC<n> voltage
 DAC<n> raw
-DAC<n> config set range <low> <high>
-DAC<n> config get range <low> <high>
+DAC<n> config range <low> <high>
+DAC<n> config range <low> <high>
 pwm?
 
 UART commands
 -------------
 UART<n> send <length>
 UART<n>
-UART<n> config set baudrate <baudrate>
-UART<n> config get baudrate
-UART<n> config set format <format>     - e.g. 8n1
-UART<n> config get format
+UART<n> config baudrate <baudrate>
+UART<n> config baudrate
+UART<n> config format <format>     - e.g. 8n1
+UART<n> config format
 
 UART config parameters
 ----------------------
@@ -463,7 +491,7 @@ UART<n> overrun error <n>
 UART<n> underrun error <n>
 UART<n> framing error <n>
 UART<n> parity error <n>
-\end{verbatim}
+\end{comment}
 
 
 \end{document}

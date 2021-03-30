@@ -13,6 +13,7 @@
 #include "config.h"
 #include "listener.h"
 #include "periodic.h"
+#include "adc.h"
 //#include "uart.h"
 
 static void listener_line_handler(char *line);
@@ -195,14 +196,15 @@ static void listener_line_handler(char *line)
 	{
 		printf("Echo: %s\n", strtok(NULL, ""));
 	}
-	else if(strcmp(cmd, "periodic") == 0)
+	else if(strcmp(cmd, "adc0") == 0)
 	{
-		adc_periodic(100, 0);
+		adc_command(0);
 	}
-	else if(strcmp(cmd, "off") == 0)
+	else if(strcmp(cmd, "adc1") == 0)
 	{
-		adc_off();
+		adc_command(1);
 	}
+#if 0
 	else if(strncmp(cmd, "CAN", 4) == 0)
 	{
 //		cmd_can(cmd[4], line);
@@ -211,6 +213,7 @@ static void listener_line_handler(char *line)
 	{
 //		cmd_uart(cmd[4], line);
 	}
+#endif
 	else
 		printf("ERR Unknown command\n");
 }

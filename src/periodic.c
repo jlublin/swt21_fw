@@ -13,8 +13,8 @@ static struct
 {
 	struct
 	{
+		uint32_t next;
 		uint16_t period;
-		uint16_t next;
 	} adc[2];
 } periodic_conf;
 
@@ -114,7 +114,7 @@ void periodic_thread(void *parameters)
 				uint16_t period = event.adc_periodic.period;
 				uint16_t offset = event.adc_periodic.offset;
 
-				uint32_t current_offset = current_tick & period;
+				uint32_t current_offset = current_tick % period;
 
 				periodic_conf.adc[0].period = period;
 				periodic_conf.adc[0].next = current_tick - current_offset + period + offset;

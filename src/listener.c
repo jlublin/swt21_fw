@@ -1,5 +1,6 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <freertos/queue.h>
 #include <esp_log.h>
 #include <esp_task_wdt.h>
 #include <driver/uart.h>
@@ -16,6 +17,9 @@
 static void listener_line_handler(char *line);
 
 static const int uart = UART_NUM_0;
+static QueueHandle_t uart_queue;
+static QueueSetHandle_t listener_queue_set;
+
 
 /*******************************************************************************
  *
@@ -65,13 +69,13 @@ const char *get_reset_reason()
 	return reason_str;
 }
 
-
 /*******************************************************************************
  *
  ******************************************************************************/
 void listener_thread(void *parameters)
 {
 	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
+	listener_queue_set = xQueueCreateSet(20);
 
 	/* Setup UART */
 
@@ -85,7 +89,8 @@ void listener_thread(void *parameters)
 	};
 
 	uart_param_config(uart, &uart_config);
-    uart_driver_install(uart, 1024 * 2, 0, 0, NULL, 0);
+	uart_driver_install(uart, 1024, 1024, 10, &uart_queue, 0);
+	xQueueAddToSet(uart_queue, listener_queue_set);
 
 	const char *reset_reason = get_reset_reason();
 
@@ -102,44 +107,60 @@ void listener_thread(void *parameters)
 
 	while(1)
 	{
-		uint8_t c;
-		int ret = uart_read_bytes(uart, &c, 1, 100 / portTICK_RATE_MS);
+		QueueSetMemberHandle_t queue =
+			xQueueSelectFromSet(listener_queue_set, 1000 / portTICK_RATE_MS);
 
-		/* If we did not receive any character then try again */
-		if(ret != 1)
-			continue;
-
-		/* Convert DEL (0x7f) into backspace (0x08), needed in some terminals */
-		if(c == '\x7f')
-			c = '\b';
-
-		/* Handle backspace specifically */
-		if(c == '\b')
+		if(queue == uart_queue)
 		{
-			if(index > 0)
+			uart_event_t event;
+			xQueueReceive(uart_queue, &event, 0);
+
+			/* Only handle received data */
+			if(event.type != UART_DATA)
+				continue;
+
+			while(1)
 			{
-				index -= 1;
-				printf("\b \b"); /* Back, overwrite with space and back again */
+				uint8_t c;
+				int ret = uart_read_bytes(uart, &c, 1, 100 / portTICK_RATE_MS));
+
+				/* If we did not receive any character then break loop */
+				if(ret != 1)
+					break;
+
+				/* Convert DEL (0x7f) into backspace (0x08), needed in some terminals */
+				if(c == '\x7f')
+					c = '\b';
+
+				/* Handle backspace specifically */
+				if(c == '\b')
+				{
+					if(index > 0)
+					{
+						index -= 1;
+						printf("\b \b"); /* Back, overwrite with space and back again */
+					}
+				}
+				/* Handle new line */
+				else if(c == '\n')
+				{
+					printf("\n");
+					line[index] = 0;
+					listener_line_handler(line);
+					index = 0;
+				}
+				/* Ignore all other control characters */
+				else if(c < 0x20)
+				{
+					continue;
+				}
+				/* Otherwise echo character written */
+				else
+				{
+					uart_write_bytes(uart, (char*)&c, 1);
+					line[index++] = c;
+				}
 			}
-		}
-		/* Handle new line */
-		else if(c == '\n')
-		{
-			printf("\n");
-			line[index] = 0;
-			listener_line_handler(line);
-			index = 0;
-		}
-		/* Ignore all other control characters */
-		else if(c < 0x20)
-		{
-			continue;
-		}
-		/* Otherwise echo character written */
-		else
-		{
-			uart_write_bytes(uart, (char*)&c, 1);
-			line[index++] = c;
 		}
 	}
 }

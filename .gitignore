@@ -2,3 +2,7 @@ CMakeLists.txt
 .pio/
 sdkconfig.old
 src/config.h
+*.aux
+*.log
+*.pdf
+*.toc

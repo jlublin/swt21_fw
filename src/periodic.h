@@ -5,3 +5,5 @@
  */
 
 void periodic_thread(void *parameters);
+void adc_off();
+void adc_periodic(uint16_t period, uint16_t offset);

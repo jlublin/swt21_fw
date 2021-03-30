@@ -12,6 +12,7 @@
 
 #include "config.h"
 #include "listener.h"
+#include "periodic.h"
 //#include "uart.h"
 
 static void listener_line_handler(char *line);
@@ -122,7 +123,7 @@ void listener_thread(void *parameters)
 			while(1)
 			{
 				uint8_t c;
-				int ret = uart_read_bytes(uart, &c, 1, 100 / portTICK_RATE_MS));
+				int ret = uart_read_bytes(uart, &c, 1, 100 / portTICK_RATE_MS);
 
 				/* If we did not receive any character then break loop */
 				if(ret != 1)
@@ -194,9 +195,17 @@ static void listener_line_handler(char *line)
 	{
 		printf("Echo: %s\n", strtok(NULL, ""));
 	}
+	else if(strcmp(cmd, "periodic") == 0)
+	{
+		adc_periodic(100, 0);
+	}
+	else if(strcmp(cmd, "off") == 0)
+	{
+		adc_off();
+	}
 	else if(strncmp(cmd, "CAN", 4) == 0)
 	{
-//		cmd_uart(cmd[4], line);
+//		cmd_can(cmd[4], line);
 	}
 	else if(strncmp(cmd, "UART", 4) == 0)
 	{

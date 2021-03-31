@@ -8,6 +8,12 @@
 #include "adc.h"
 #include "listener.h"
 
+int adc_channel[ADC_COUNT] =
+{
+	ADC1_CHANNEL_0,
+	ADC1_CHANNEL_1
+};
+
 struct
 {
 	float min;
@@ -36,13 +42,7 @@ int adc_init()
 
 uint16_t adc_single(enum adc adc)
 {
-	if(adc == ADC0)
-		return adc1_get_raw(ADC1_CHANNEL_0);
-
-	else if(adc == ADC1)
-		return adc1_get_raw(ADC1_CHANNEL_1);
-
-	return 0;
+	return adc1_get_raw(adc_channel[adc]);
 }
 
 void adc_print_value(enum adc adc, uint16_t raw_value)

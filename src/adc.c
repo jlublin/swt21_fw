@@ -15,6 +15,8 @@ int adc_channel[ADC_COUNT] =
 	ADC1_CHANNEL_1
 };
 
+const int ADC_BITS = 12;
+
 struct
 {
 	float min;
@@ -96,7 +98,9 @@ void adc_print_value(enum adc adc, uint16_t raw_value)
 	}
 	else
 	{
-		float value = (adc_config[adc].max - adc_config[adc].min)*raw_value + adc_config[adc].min;
+		float value = (adc_config[adc].max - adc_config[adc].min)
+			* raw_value / ((1<<ADC_BITS) - 1)
+			+ adc_config[adc].min;
 		printf("ADC%d %0.3f\n", adc, value);
 	}
 }

@@ -7,6 +7,7 @@
 #include "listener.h"
 #include "uart.h"
 #include "periodic.h"
+#include "adc.h"
 
 /* Firmware main, sets up running threads */
 int app_main()
@@ -23,6 +24,7 @@ int app_main()
 	ESP_ERROR_CHECK(ret);
 
 	listener_init();
+	adc_init();
 
 	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 4, NULL, 0);
 	xTaskCreatePinnedToCore(&periodic_thread, "periodic", 10000, NULL, 5, NULL, 0);

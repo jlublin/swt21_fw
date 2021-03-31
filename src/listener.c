@@ -24,7 +24,6 @@ static QueueSetHandle_t listener_queue_set;
 
 
 /*******************************************************************************
- *
  * May be called from other threads
  ******************************************************************************/
 void print_str(const char *format, ...)
@@ -74,11 +73,8 @@ const char *get_reset_reason()
 /*******************************************************************************
  *
  ******************************************************************************/
-void listener_thread(void *parameters)
+void listener_init()
 {
-	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
-	listener_queue_set = xQueueCreateSet(20);
-
 	/* Setup UART */
 
 	uart_config_t uart_config =
@@ -89,17 +85,26 @@ void listener_thread(void *parameters)
 		.stop_bits = UART_STOP_BITS_1,
 		.flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
 	};
-
 	uart_param_config(uart, &uart_config);
 	uart_driver_install(uart, 1024, 1024, 10, &uart_queue, 0);
-	xQueueAddToSet(uart_queue, listener_queue_set);
 
 	const char *reset_reason = get_reset_reason();
 
 	printf("SWT21 lab kit\nBooting...\n");
 	printf("Firmware version: %s\n", GIT_TAG);
 	printf("Source code revision: %s\n", GIT_REV);
-	printf("Reset reason: %s\n", reset_reason);
+	printf("Reset reason: %s\n\n", reset_reason);
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+void listener_thread(void *parameters)
+{
+	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
+
+	listener_queue_set = xQueueCreateSet(20);
+	xQueueAddToSet(uart_queue, listener_queue_set);
 
 	/* Start listener */
 	const int buffer_size = 256;

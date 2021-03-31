@@ -20,10 +20,11 @@ struct
 	float max;
 	uint16_t period;
 	uint16_t offset;
-	uint8_t flags; /* raw, timestamp */
+	uint8_t flags; /* initialized, raw, timestamp */
 } adc_config[ADC_COUNT];
 
-const uint8_t FLAG_RAW = 1 << 0;
+const uint8_t ADC_FLAG_INIT = 1 << 0;
+const uint8_t ADC_FLAG_RAW =  1 << 1;
 
 int adc_init()
 {
@@ -47,7 +48,7 @@ uint16_t adc_single(enum adc adc)
 
 void adc_print_value(enum adc adc, uint16_t raw_value)
 {
-	if(adc_config[adc].flags & FLAG_RAW)
+	if(adc_config[adc].flags & ADC_FLAG_RAW)
 	{
 		printf("ADC%d %d\n", adc, raw_value);
 	}

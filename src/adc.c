@@ -78,6 +78,8 @@ int adc_init()
 			adc_config[0].flags |= ADC_FLAG_INIT;
 	}
 
+	nvs_close(nvs_handle);
+
 	return 0;
 }
 

@@ -1,5 +1,6 @@
 #include <freertos/FreeRTOS.h>
 #include <driver/adc.h>
+#include <nvs_flash.h>
 
 #include <string.h>
 
@@ -28,15 +29,54 @@ const uint8_t ADC_FLAG_RAW =  1 << 1;
 
 int adc_init()
 {
-	/* TODO: Read ADC min/max from EEPROM */
-	adc_config[0].min = 0;
-	adc_config[0].max = 3.3;
-	adc_config[1].min = 0;
-	adc_config[1].max = 3.3;
+	esp_err_t err;
 
 	adc1_config_width(ADC_WIDTH_BIT_12);
-	adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_0);
-	adc1_config_channel_atten(ADC1_CHANNEL_1, ADC_ATTEN_DB_0);
+
+	nvs_handle_t nvs_handle;
+	err = nvs_open("SWT21 Lab kit", NVS_READWRITE, &nvs_handle);
+	if(err != ESP_OK)
+	{
+		printf("ERR ADC init failed!\n");
+		return -1;
+	}
+
+
+	for(int i = 0; i < ADC_COUNT; i++)
+	{
+		int error_flag = 0;
+		char parameter_name[20] = {0};
+		union
+		{
+			float f;
+			uint32_t u;
+		} value;
+
+		snprintf(parameter_name, 19, "adc%d_min", i);
+		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
+		if(err)
+		{
+			printf("ERR %s not configured\n", parameter_name);
+			error_flag = 1;
+		}
+		adc_config[i].min = value.f;
+
+		snprintf(parameter_name, 19, "adc%d_max", i);
+		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
+		if(err)
+		{
+			printf("ERR %s not configured\n", parameter_name);
+			error_flag = 1;
+		}
+		adc_config[i].max = value.f;
+
+		/* Set channel attenuation */
+		adc1_config_channel_atten(adc_channel[i], ADC_ATTEN_DB_0);
+
+		/* Mark as initialized if we did not have any errors */
+		if(!error_flag)
+			adc_config[0].flags |= ADC_FLAG_INIT;
+	}
 
 	return 0;
 }

@@ -153,9 +153,9 @@ void adc_command(int adc)
 		printf(
 			"Available commands:\n"
 			"\n"
-			"help - write this text\n"
-			"echo - echo all arguments\n"
-			"hello - say hello\n");
+			"adc off - turn off periodic adc\n"
+			"adc single - convert single value\n"
+			"adc periodic <period (ms)> [offset (ms)] - convert periodically\n");
 	}
 	else if(strcmp(cmd, "off") == 0)
 	{

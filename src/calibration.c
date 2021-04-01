@@ -8,19 +8,27 @@
 
 enum
 {
-	PARAMETER_ADC0_MIN = 0,
-	PARAMETER_ADC0_MAX,
-	PARAMETER_ADC1_MIN,
-	PARAMETER_ADC1_MAX,
+	PARAMETER_ADC0_MIN_1X = 0,
+	PARAMETER_ADC0_MAX_1X,
+	PARAMETER_ADC0_MIN_10X,
+	PARAMETER_ADC0_MAX_10X,
+	PARAMETER_ADC1_MIN_1X,
+	PARAMETER_ADC1_MAX_1X,
+	PARAMETER_ADC1_MIN_10X,
+	PARAMETER_ADC1_MAX_10X,
 	PARAMETER_COUNT
 };
 
 const char * parameter_names[PARAMETER_COUNT] =
 {
-	"adc0_min",
-	"adc0_max",
-	"adc1_min",
-	"adc1_max"
+	"adc0_min_1x",
+	"adc0_max_1x",
+	"adc0_min_10x",
+	"adc0_max_10x",
+	"adc1_min_1x",
+	"adc1_max_1x",
+	"adc1_min_10x",
+	"adc1_max_10x"
 };
 
 /*******************************************************************************

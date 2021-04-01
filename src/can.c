@@ -113,6 +113,11 @@ void can_command(int adc)
 	}
 	else if(strcmp(cmd, "send") == 0)
 	{
+		can_message_t msg;
+		const char *msg_str = strtok(NULL, " ");
+
+		if(parse_message_format(&msg, msg_str) < 0)
+			goto einval;
 	}
 	else if(strcmp(cmd, "config") == 0)
 	{

@@ -19,15 +19,18 @@ const int ADC_BITS = 12;
 
 struct
 {
-	float min;
-	float max;
+	float min_1x;
+	float max_1x;
+	float min_10x;
+	float max_10x;
 	uint16_t period;
 	uint16_t offset;
-	uint8_t flags; /* initialized, raw, timestamp */
+	uint8_t flags; /* initialized, raw, amp, timestamp */
 } adc_config[ADC_COUNT];
 
 const uint8_t ADC_FLAG_INIT = 1 << 0;
 const uint8_t ADC_FLAG_RAW =  1 << 1;
+const uint8_t ADC_FLAG_AMP10X = 1 << 2;
 
 int adc_init()
 {
@@ -47,30 +50,48 @@ int adc_init()
 	for(int i = 0; i < ADC_COUNT; i++)
 	{
 		int error_flag = 0;
-		char parameter_name[20] = {0};
+		char parameter_name[24] = {0};
 		union
 		{
 			float f;
 			uint32_t u;
 		} value;
 
-		snprintf(parameter_name, 19, "adc%d_min", i);
+		snprintf(parameter_name, 23, "adc%d_min_1x", i);
 		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
 			error_flag = 1;
 		}
-		adc_config[i].min = value.f;
+		adc_config[i].min_1x = value.f;
 
-		snprintf(parameter_name, 19, "adc%d_max", i);
+		snprintf(parameter_name, 23, "adc%d_max_1x", i);
 		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
 			error_flag = 1;
 		}
-		adc_config[i].max = value.f;
+		adc_config[i].max_1x = value.f;
+
+		snprintf(parameter_name, 23, "adc%d_min_10x", i);
+		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
+		if(err)
+		{
+			printf("ERR %s not configured\n", parameter_name);
+			error_flag = 1;
+		}
+		adc_config[i].min_10x = value.f;
+
+		snprintf(parameter_name, 23, "adc%d_max_10x", i);
+		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
+		if(err)
+		{
+			printf("ERR %s not configured\n", parameter_name);
+			error_flag = 1;
+		}
+		adc_config[i].max_10x = value.f;
 
 		/* Set channel attenuation */
 		adc1_config_channel_atten(adc_channel[i], ADC_ATTEN_DB_0);
@@ -98,9 +119,18 @@ void adc_print_value(enum adc adc, uint16_t raw_value)
 	}
 	else
 	{
-		float value = (adc_config[adc].max - adc_config[adc].min)
-			* raw_value / ((1<<ADC_BITS) - 1)
-			+ adc_config[adc].min;
+		int amp = adc_config[adc].flags & ADC_FLAG_AMP10X;
+		float value;
+
+		if(amp)
+			value = (adc_config[adc].max_10x - adc_config[adc].min_10x)
+				* raw_value / ((1<<ADC_BITS) - 1)
+				+ adc_config[adc].min_10x;
+		else
+			value = (adc_config[adc].max_1x - adc_config[adc].min_1x)
+				* raw_value / ((1<<ADC_BITS) - 1)
+				+ adc_config[adc].min_1x;
+
 		printf("ADC%d %0.3f\n", adc, value);
 	}
 }

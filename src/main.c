@@ -28,8 +28,9 @@ int app_main()
 	adc_init();
 	can_init();
 
-	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 4, NULL, 0);
+	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 1, NULL, 0);
 	xTaskCreatePinnedToCore(&periodic_thread, "periodic", 10000, NULL, 5, NULL, 0);
+	xTaskCreatePinnedToCore(&can_rx_thread, "can", 10000, NULL, 4, NULL, 0);
 
 	struct uart_thread_parameters uart_parameters = { .uart = 1 };
 	xTaskCreatePinnedToCore(&uart_thread, "uart", 10000, &uart_parameters,

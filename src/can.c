@@ -1,6 +1,8 @@
 #include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
 #include <driver/can.h>
 #include <nvs_flash.h>
+#include <esp_task_wdt.h>
 
 #include <string.h>
 
@@ -23,6 +25,20 @@ struct
 
 const uint8_t CAN_FLAG_INIT = 1 << 0;
 const uint8_t CAN_FLAG_RX_ON = 1 << 1;
+
+static QueueHandle_t can_rx_queue;
+
+struct can_rx_event
+{
+	uint8_t event;
+};
+
+enum
+{
+	EVENT_CAN_RX_OFF = 0,
+	EVENT_CAN_RX_ON = 1
+};
+
 
 int can_init()
 {
@@ -89,6 +105,7 @@ int parse_message_format(can_message_t *msg, const char *fmt)
 void can_command(int adc)
 {
 	char *cmd = strtok(NULL, " ");
+	esp_err_t err;
 
 	/* Make sure we have a command */
 	if(!cmd)
@@ -110,6 +127,14 @@ void can_command(int adc)
 	}
 	else if(strcmp(cmd, "rx") == 0)
 	{
+		const char *arg = strtok(NULL, " ");
+
+		if(strcmp(cmd, "on") == 0)
+			can_rx_on();
+		else if(strcmp(cmd, "off") == 0)
+			can_rx_off();
+		else
+			goto einval;
 	}
 	else if(strcmp(cmd, "send") == 0)
 	{
@@ -118,6 +143,15 @@ void can_command(int adc)
 
 		if(parse_message_format(&msg, msg_str) < 0)
 			goto einval;
+
+		err = can_transmit(&msg, 0);
+		if(err != ESP_OK)
+		{
+			printf("ERR Transmit failed!\n");
+			return;
+		}
+
+		printf("OK\n");
 	}
 	else if(strcmp(cmd, "config") == 0)
 	{
@@ -133,4 +167,66 @@ void can_command(int adc)
 einval:
 	printf(EINVAL);
 	return;
+}
+
+void can_rx_off()
+{
+	struct can_rx_event event =
+	{
+		.event = EVENT_CAN_RX_OFF
+	};
+
+	xQueueSendToBack(can_rx_queue, &event, 0);
+}
+
+void can_rx_on()
+{
+	struct can_rx_event event =
+	{
+		.event = EVENT_CAN_RX_ON
+	};
+
+	xQueueSendToBack(can_rx_queue, &event, 0);
+}
+
+void can_rx_thread(void *parameters)
+{
+	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
+
+	can_rx_queue = xQueueCreate(10, sizeof(struct can_rx_event));
+
+	int rx_running = 0;
+
+	while(1)
+	{
+		can_message_t msg;
+		if(can_receive(&msg, 0) == ESP_OK && rx_running)
+		{
+			printf("CAN frame %x#");
+			if(msg.flags & CAN_MSG_FLAG_RTR)
+				printf("R");
+			else
+				for(int i = 0; i < msg.data_length_code; i++)
+					printf("%02x", msg.data[i]);
+
+			printf("\n");
+		}
+
+
+		struct can_rx_event event;
+		if(xQueueReceive(can_rx_queue, &event, 0))
+		{
+			if(event.event == EVENT_CAN_RX_OFF)
+			{
+				rx_running = 0;
+				printf("OK\n");
+			}
+
+			else if(event.event == EVENT_CAN_RX_ON)
+			{
+				rx_running = 1;
+				printf("OK\n");
+			}
+		}
+	}
 }

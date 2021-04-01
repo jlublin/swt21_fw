@@ -8,6 +8,7 @@
 #include "uart.h"
 #include "periodic.h"
 #include "adc.h"
+#include "can.h"
 
 /* Firmware main, sets up running threads */
 int app_main()
@@ -25,6 +26,7 @@ int app_main()
 
 	listener_init();
 	adc_init();
+	can_init();
 
 	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 4, NULL, 0);
 	xTaskCreatePinnedToCore(&periodic_thread, "periodic", 10000, NULL, 5, NULL, 0);

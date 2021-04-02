@@ -11,8 +11,8 @@
 #include "can.h"
 #include "listener.h"
 
-const int can_tx_pin = 0; /* TODO */
-const int can_rx_pin = 1; /* TODO */
+const int can_tx_pin = GPIO_NUM_0;
+const int can_rx_pin = GPIO_NUM_2;
 
 struct
 {
@@ -20,7 +20,7 @@ struct
 	can_filter_config_t filter;
 	can_message_t periodic_messages[8];
 
-	uint8_t flags; /* initialized */
+	uint8_t flags; /* initialized, rx */
 } can_config;
 
 const uint8_t CAN_FLAG_INIT = 1 << 0;
@@ -57,7 +57,20 @@ int can_init()
 		.clkout_divider = 0
 	};
 
+	/* Setup default timing */
+	can_config.timing.brp = 8;
+	can_config.timing.tseg_1 = 5;
+	can_config.timing.tseg_2 = 4;
+	can_config.timing.sjw = 1;
 	err = can_driver_install(&config, &can_config.timing, &can_config.filter);
+
+	if(err != ESP_OK)
+	{
+		printf("ERR CAN init failed!\n");
+		return -1;
+	}
+
+	err = can_start();
 	if(err != ESP_OK)
 	{
 		printf("ERR CAN init failed!\n");
@@ -102,7 +115,7 @@ int parse_message_format(can_message_t *msg, const char *fmt)
 	return 0;
 }
 
-void can_command(int adc)
+void can_command()
 {
 	char *cmd = strtok(NULL, " ");
 	esp_err_t err;
@@ -141,6 +154,7 @@ void can_command(int adc)
 		can_message_t msg;
 		const char *msg_str = strtok(NULL, " ");
 
+		memset(&msg, 0, sizeof(msg));
 		if(parse_message_format(&msg, msg_str) < 0)
 			goto einval;
 

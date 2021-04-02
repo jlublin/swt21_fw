@@ -15,6 +15,7 @@
 #include "periodic.h"
 #include "adc.h"
 #include "calibration.h"
+#include "can.h"
 //#include "uart.h"
 
 static void listener_line_handler(char *line);
@@ -214,11 +215,11 @@ static void listener_line_handler(char *line)
 	{
 		calibration_command();
 	}
-#if 0
-	else if(strncmp(cmd, "CAN", 4) == 0)
+	else if(strcmp(cmd, "can") == 0)
 	{
-//		cmd_can(cmd[4], line);
+		can_command();
 	}
+#if 0
 	else if(strncmp(cmd, "UART", 4) == 0)
 	{
 //		cmd_uart(cmd[4], line);

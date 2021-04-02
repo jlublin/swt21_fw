@@ -191,6 +191,10 @@ void can_rx_on()
 
 void can_rx_thread(void *parameters)
 {
+	/* Check that CAN initialized correctly */
+	while(!(can_config.flags & CAN_FLAG_INIT))
+		vTaskDelay(100 * portTICK_PERIOD_MS);
+
 	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
 
 	can_rx_queue = xQueueCreate(10, sizeof(struct can_rx_event));

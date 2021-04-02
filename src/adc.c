@@ -11,8 +11,8 @@
 
 int adc_channel[ADC_COUNT] =
 {
-	ADC1_CHANNEL_0,
-	ADC1_CHANNEL_1
+	ADC1_CHANNEL_4,
+	ADC1_CHANNEL_5
 };
 
 const int ADC_BITS = 12;
@@ -94,7 +94,7 @@ int adc_init()
 		adc_config[i].max_10x = value.f;
 
 		/* Set channel attenuation */
-		adc1_config_channel_atten(adc_channel[i], ADC_ATTEN_DB_0);
+		adc1_config_channel_atten(adc_channel[i], ADC_ATTEN_DB_11);
 
 		/* Mark as initialized if we did not have any errors */
 		if(!error_flag)

@@ -14,6 +14,7 @@
 #include "listener.h"
 #include "periodic.h"
 #include "adc.h"
+#include "dac.h"
 #include "calibration.h"
 #include "can.h"
 //#include "uart.h"
@@ -210,6 +211,14 @@ static void listener_line_handler(char *line)
 	else if(strcmp(cmd, "adc1") == 0)
 	{
 		adc_command(1);
+	}
+	else if(strcmp(cmd, "dac0") == 0)
+	{
+		dac_command(0);
+	}
+	else if(strcmp(cmd, "dac1") == 0)
+	{
+		dac_command(1);
 	}
 	else if(strcmp(cmd, "calibration") == 0)
 	{

@@ -17,6 +17,7 @@
 #include "dac.h"
 #include "calibration.h"
 #include "can.h"
+#include "led.h"
 //#include "uart.h"
 
 static void listener_line_handler(char *line);
@@ -227,6 +228,10 @@ static void listener_line_handler(char *line)
 	else if(strcmp(cmd, "can") == 0)
 	{
 		can_command();
+	}
+	else if(strcmp(cmd, "led") == 0)
+	{
+		led_command();
 	}
 #if 0
 	else if(strncmp(cmd, "UART", 4) == 0)

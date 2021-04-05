@@ -4,6 +4,7 @@
 #include <esp_task_wdt.h>
 
 #include "listener.h"
+#include "led.h"
 
 /*
  * Periodic configuration does not keep the actual configuration but only a copy
@@ -16,11 +17,18 @@ static struct
 		uint32_t next;
 		uint16_t period;
 	} adc[2];
+	struct
+	{
+		uint32_t next;
+		uint16_t period;
+		uint8_t state;
+	} led;
 } periodic_conf;
 
 static uint16_t run_flags;
 static const uint16_t RUN_FLAG_ADC0 = 1 << 0;
 //static const uint16_t RUN_FLAG_ADC1 = 1 << 1;
+static const uint16_t RUN_FLAG_LED = 1 << 2;
 
 static QueueHandle_t periodic_queue;
 
@@ -34,13 +42,24 @@ struct periodic_event
 			uint16_t period;
 			uint16_t offset;
 		} adc_periodic;
+		struct
+		{
+			uint8_t state;
+		} led_off;
+		struct
+		{
+			uint16_t period;
+			uint16_t offset;
+		} led_blink;
 	};
 };
 
 enum
 {
 	EVENT_ADC_OFF = 0,
-	EVENT_ADC_PERIODIC = 1
+	EVENT_ADC_PERIODIC,
+	EVENT_LED_OFF,
+	EVENT_LED_BLINK
 };
 
 /*******************************************************************************
@@ -66,6 +85,35 @@ void adc_periodic(uint16_t period, uint16_t offset)
 		.event = EVENT_ADC_PERIODIC,
 		.adc_periodic.period = period,
 		.adc_periodic.offset = offset
+	};
+
+	xQueueSendToBack(periodic_queue, &event, 0);
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+void led_off(uint8_t state)
+{
+	struct periodic_event event =
+	{
+		.event = EVENT_LED_OFF,
+		.led_off.state = state
+	};
+
+	xQueueSendToBack(periodic_queue, &event, 0);
+}
+
+/*******************************************************************************
+ *
+ ******************************************************************************/
+void led_blink(uint16_t period, uint16_t offset)
+{
+	struct periodic_event event =
+	{
+		.event = EVENT_LED_BLINK,
+		.led_blink.period = period,
+		.led_blink.offset = offset
 	};
 
 	xQueueSendToBack(periodic_queue, &event, 0);
@@ -100,6 +148,17 @@ void periodic_thread(void *parameters)
 			}
 		}
 
+		if(run_flags & RUN_FLAG_LED)
+		{
+			if(current_tick >= periodic_conf.led.next)
+			{
+				periodic_conf.led.next += periodic_conf.led.period;
+
+				periodic_conf.led.state = !periodic_conf.led.state;
+				led_set_state(periodic_conf.led.state);
+			}
+		}
+
 		struct periodic_event event;
 		if(xQueueReceive(periodic_queue, &event, 0))
 		{
@@ -109,7 +168,7 @@ void periodic_thread(void *parameters)
 				printf("OK\n");
 			}
 
-			if(event.event == EVENT_ADC_PERIODIC)
+			else if(event.event == EVENT_ADC_PERIODIC)
 			{
 				uint16_t period = event.adc_periodic.period;
 				uint16_t offset = event.adc_periodic.offset;
@@ -120,6 +179,29 @@ void periodic_thread(void *parameters)
 				periodic_conf.adc[0].next = current_tick - current_offset + period + offset;
 
 				run_flags |= RUN_FLAG_ADC0;
+				printf("OK\n");
+			}
+
+			else if(event.event == EVENT_LED_OFF)
+			{
+				run_flags &= ~RUN_FLAG_LED;
+				led_set_state(event.led_off.state);
+				printf("OK\n");
+			}
+
+			else if(event.event == EVENT_LED_BLINK)
+			{
+				uint16_t period = event.led_blink.period;
+				uint16_t offset = event.led_blink.offset;
+
+				uint32_t current_offset = current_tick % period;
+
+				periodic_conf.led.period = period;
+				periodic_conf.led.next = current_tick - current_offset
+				                         + period + offset;
+				periodic_conf.led.state = 0;
+
+				run_flags |= RUN_FLAG_LED;
 				printf("OK\n");
 			}
 		}

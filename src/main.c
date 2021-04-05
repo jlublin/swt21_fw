@@ -10,6 +10,7 @@
 #include "adc.h"
 #include "dac.h"
 #include "can.h"
+#include "led.h"
 
 /* Firmware main, sets up running threads */
 int app_main()
@@ -29,6 +30,7 @@ int app_main()
 	adc_init();
 	dac_init();
 	can_init();
+	led_init();
 
 	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 1, NULL, 0);
 	xTaskCreatePinnedToCore(&periodic_thread, "periodic", 10000, NULL, 5, NULL, 0);

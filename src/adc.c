@@ -7,7 +7,7 @@
 #include "periodic.h"
 #include "errors.h"
 #include "adc.h"
-#include "listener.h"
+#include "hci.h"
 
 int adc_channel[ADC_COUNT] =
 {

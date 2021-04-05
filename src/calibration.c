@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "errors.h"
-#include "listener.h"
+#include "hci.h"
 
 enum
 {

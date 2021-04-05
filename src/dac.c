@@ -7,7 +7,7 @@
 
 #include "errors.h"
 #include "dac.h"
-#include "listener.h"
+#include "hci.h"
 
 int dac_channel[DAC_COUNT] =
 {

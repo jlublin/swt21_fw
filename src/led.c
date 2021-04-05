@@ -9,7 +9,7 @@
 #include "periodic.h"
 #include "errors.h"
 #include "led.h"
-#include "listener.h"
+#include "hci.h"
 
 const int led_pin = GPIO_NUM_23;
 

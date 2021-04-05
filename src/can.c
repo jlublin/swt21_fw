@@ -9,7 +9,7 @@
 #include "periodic.h"
 #include "errors.h"
 #include "can.h"
-#include "listener.h"
+#include "hci.h"
 
 const int can_tx_pin = GPIO_NUM_0;
 const int can_rx_pin = GPIO_NUM_2;

@@ -4,7 +4,7 @@
 #include <nvs_flash.h>
 #include <esp_task_wdt.h>
 
-#include "listener.h"
+#include "hci.h"
 #include "uart.h"
 #include "periodic.h"
 #include "adc.h"
@@ -26,13 +26,13 @@ int app_main()
 	}
 	ESP_ERROR_CHECK(ret);
 
-	listener_init();
+	hci_init();
 	adc_init();
 	dac_init();
 	can_init();
 	led_init();
 
-	xTaskCreatePinnedToCore(&listener_thread, "listener", 20000, NULL, 1, NULL, 0);
+	xTaskCreatePinnedToCore(&hci_thread, "hci", 20000, NULL, 1, NULL, 0);
 	xTaskCreatePinnedToCore(&periodic_thread, "periodic", 10000, NULL, 5, NULL, 0);
 	xTaskCreatePinnedToCore(&can_rx_thread, "can", 10000, NULL, 4, NULL, 0);
 

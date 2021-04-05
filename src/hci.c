@@ -11,7 +11,7 @@
 #include <stdarg.h>
 
 #include "config.h"
-#include "listener.h"
+#include "hci.h"
 #include "periodic.h"
 #include "adc.h"
 #include "dac.h"
@@ -20,14 +20,13 @@
 #include "led.h"
 //#include "uart.h"
 
-static void listener_line_handler(char *line);
+static void hci_line_handler(char *line);
 
 static const int uart = UART_NUM_0;
 static QueueHandle_t uart_queue;
-static QueueSetHandle_t listener_queue_set;
+static QueueSetHandle_t hci_queue_set;
 
-/* TODO: change name from listener to control_interface or something */
-/* TX functionallity */
+/* TX functionality */
 #define TX_SLOTS 10
 static struct
 {
@@ -43,7 +42,7 @@ static const int bytes_per_second = baudrate / 10;
  *
  * Return value: TX handle
  ******************************************************************************/
-int alloc_tx_slot(uint16_t period, uint16_t bytes)
+int hci_alloc_tx_slot(uint16_t period, uint16_t bytes)
 {
 	int slot = -1;
 	float bytes_per_tick = 0;
@@ -79,7 +78,7 @@ int alloc_tx_slot(uint16_t period, uint16_t bytes)
 /*******************************************************************************
  * May be called from other threads
  ******************************************************************************/
-void free_tx_slot(int tx_handle)
+void hci_free_tx_slot(int tx_handle)
 {
 	tx_scheduling[tx_handle].period = 0;
 }
@@ -87,7 +86,7 @@ void free_tx_slot(int tx_handle)
 /*******************************************************************************
  * May be called from other threads
  ******************************************************************************/
-void print_str(const char *format, ...)
+void hci_print_str(const char *format, ...)
 {
 	va_list arglist;
 	va_start(arglist, format);
@@ -103,7 +102,7 @@ void print_str(const char *format, ...)
 /*******************************************************************************
  *
  ******************************************************************************/
-const char *get_reset_reason()
+static const char *get_reset_reason()
 {
 	esp_reset_reason_t reason = esp_reset_reason();
 	const char *reason_str;
@@ -134,7 +133,7 @@ const char *get_reset_reason()
 /*******************************************************************************
  *
  ******************************************************************************/
-void listener_init()
+void hci_init()
 {
 	/* Setup UART */
 
@@ -160,14 +159,14 @@ void listener_init()
 /*******************************************************************************
  *
  ******************************************************************************/
-void listener_thread(void *parameters)
+void hci_thread(void *parameters)
 {
 	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
 
-	listener_queue_set = xQueueCreateSet(20);
-	xQueueAddToSet(uart_queue, listener_queue_set);
+	hci_queue_set = xQueueCreateSet(20);
+	xQueueAddToSet(uart_queue, hci_queue_set);
 
-	/* Start listener */
+	/* Start hci RX */
 	const int buffer_size = 256;
 
 	char line[buffer_size];
@@ -176,7 +175,7 @@ void listener_thread(void *parameters)
 	while(1)
 	{
 		QueueSetMemberHandle_t queue =
-			xQueueSelectFromSet(listener_queue_set, 1000 / portTICK_RATE_MS);
+			xQueueSelectFromSet(hci_queue_set, 1000 / portTICK_RATE_MS);
 
 		if(queue == uart_queue)
 		{
@@ -214,7 +213,7 @@ void listener_thread(void *parameters)
 				{
 					printf("\n");
 					line[index] = 0;
-					listener_line_handler(line);
+					hci_line_handler(line);
 					index = 0;
 				}
 				/* Ignore all other control characters */
@@ -236,7 +235,7 @@ void listener_thread(void *parameters)
 /*******************************************************************************
  *
  ******************************************************************************/
-static void listener_line_handler(char *line)
+static void hci_line_handler(char *line)
 {
 	char *cmd = strtok(line, " ");
 

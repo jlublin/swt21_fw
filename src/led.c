@@ -13,14 +13,12 @@
 
 const int led_pin = GPIO_NUM_23;
 
-struct
+static struct
 {
-	uint8_t flags; /* initialized, blinking */
-	uint16_t period;
-} lin_config;
+	uint8_t flags; /* initialized */
+} led_config;
 
-const uint8_t LIN_FLAG_INIT = 1 << 0;
-const uint8_t LIN_FLAG_BLINKING = 1 << 1;
+const uint8_t LED_FLAG_INIT = 1 << 0;
 
 int led_init()
 {
@@ -28,6 +26,8 @@ int led_init()
 
 	if(gpio_set_direction(led_pin, GPIO_MODE_OUTPUT) != ESP_OK)
 		goto esp_err;
+
+	led_config.flags |= LED_FLAG_INIT;
 
 	return 0;
 
@@ -39,7 +39,6 @@ esp_err:
 void led_command()
 {
 	char *cmd = strtok(NULL, " ");
-	esp_err_t err;
 
 	/* Make sure we have a command */
 	if(!cmd)

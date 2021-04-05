@@ -26,6 +26,63 @@ static const int uart = UART_NUM_0;
 static QueueHandle_t uart_queue;
 static QueueSetHandle_t listener_queue_set;
 
+/* TODO: change name from listener to control_interface or something */
+/* TX functionallity */
+#define TX_SLOTS 10
+static struct
+{
+	uint16_t period; /* 0 = inactive */
+	uint16_t bytes;
+} tx_scheduling[TX_SLOTS];
+
+static const int baudrate = 2000000;
+static const int bytes_per_second = baudrate / 10;
+
+/*******************************************************************************
+ * May be called from other threads
+ *
+ * Return value: TX handle
+ ******************************************************************************/
+int alloc_tx_slot(uint16_t period, uint16_t bytes)
+{
+	int slot = -1;
+	float bytes_per_tick = 0;
+
+	if(period == 0)
+		return -1;
+
+	for(int i = 0; i < TX_SLOTS; i++)
+	{
+		if(slot < 0 && tx_scheduling[i].period == 0)
+			slot = i;
+
+		if(tx_scheduling[i].period != 0)
+			bytes_per_tick +=
+				tx_scheduling[i].bytes / (float) tx_scheduling[i].period;
+	}
+
+	if(slot < 0)
+		return -1;
+
+	bytes_per_tick += bytes / (float) period;
+
+	/* Only allow 90 % TX to periodic data */
+	if(bytes_per_tick / bytes_per_second > 0.9)
+		return -1;
+
+	tx_scheduling[slot].period = period;
+	tx_scheduling[slot].bytes = bytes;
+
+	return slot;
+}
+
+/*******************************************************************************
+ * May be called from other threads
+ ******************************************************************************/
+void free_tx_slot(int tx_handle)
+{
+	tx_scheduling[tx_handle].period = 0;
+}
 
 /*******************************************************************************
  * May be called from other threads

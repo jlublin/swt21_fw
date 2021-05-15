@@ -117,10 +117,10 @@ void dac_command(int dac)
 		printf(
 			"Available commands:\n"
 			"\n"
-			"dac voltage <voltage> - set dac voltage\n"
-			"dac raw <value> - set dac raw value (0-255)\n"
-			"dac config amp10x [1/0] - set or get current amplification\n"
-			"\n");
+			"dac%d voltage <voltage> - set dac voltage\n"
+			"dac%d raw <value> - set dac raw value (0-255)\n"
+			"dac%d config amp10x [1/0] - set or get current amplification\n"
+			"\n", dac, dac, dac);
 	}
 	else if(strcmp(cmd, "voltage") == 0)
 	{

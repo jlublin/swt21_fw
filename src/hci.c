@@ -91,9 +91,9 @@ void hci_print_str(const char *format, ...)
 	va_list arglist;
 	va_start(arglist, format);
 
-	char buf[256];
-	vsnprintf(buf, 255, format, arglist);
-	buf[255] = 0;
+	char buf[1024];
+	vsnprintf(buf, 1023, format, arglist);
+	buf[1023] = 0;
 	uart_write_bytes(uart, buf, strlen(buf));
 
 	va_end(arglist);
@@ -255,13 +255,13 @@ static void hci_line_handler(char *line)
 			"\n"
 			"help - write this text\n"
 			"adc0 help - write all adc0 commands\n"
-			"adc1 help - write all adc0 commands\n"
+			"adc1 help - write all adc1 commands\n"
 			"dac0 help - write all dac0 commands\n"
 			"dac1 help - write all dac1 commands\n"
 			"calibration help - write all calibration commands\n"
 			"can help - write all can commands\n"
 			"led help - write all led commands\n"
-			"hello - say hello\n");
+			"\n");
 	}
 	else if(strcmp(cmd, "adc0") == 0)
 		adc_command(0);

@@ -149,9 +149,14 @@ void adc_command(int adc)
 		printf(
 			"Available commands:\n"
 			"\n"
-			"adc off - turn off periodic adc\n"
-			"adc single - convert single value\n"
-			"adc periodic <period (ms)> [offset (ms)] - convert periodically\n");
+			"adc%d off - turn off periodic adc\n"
+			"adc%d single - convert single value\n"
+			"adc%d periodic <period (ms)> [offset (ms)] - convert periodically\n"
+			"adc%d trig <trig value> <sample rate> <m> <n> - wait for trigger and\n"
+			"                                              convert m values before and\n"
+			"                                              n values after\n"
+			"\n", adc, adc, adc, adc);
+			/* TODO: add trig sample rate? */
 	}
 	else if(strcmp(cmd, "off") == 0)
 	{

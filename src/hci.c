@@ -254,7 +254,13 @@ static void hci_line_handler(char *line)
 			"Available commands:\n"
 			"\n"
 			"help - write this text\n"
-			"echo - echo all arguments\n"
+			"adc0 help - write all adc0 commands\n"
+			"adc1 help - write all adc0 commands\n"
+			"dac0 help - write all dac0 commands\n"
+			"dac1 help - write all dac1 commands\n"
+			"calibration help - write all calibration commands\n"
+			"can help - write all can commands\n"
+			"led help - write all led commands\n"
 			"hello - say hello\n");
 	}
 	else if(strcmp(cmd, "echo") == 0)

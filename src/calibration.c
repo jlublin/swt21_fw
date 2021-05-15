@@ -12,9 +12,9 @@ enum
 	PARAMETER_ADC0_1X_2V,
 	PARAMETER_ADC1_1X_0_1V,
 	PARAMETER_ADC1_1X_2V,
-	PARAMETER_ADC0_10X_0_1V,
+	PARAMETER_ADC0_10X_1V,
 	PARAMETER_ADC0_10X_20V,
-	PARAMETER_ADC1_10X_0_1V,
+	PARAMETER_ADC1_10X_1V,
 	PARAMETER_ADC1_10X_20V,
 
 	PARAMETER_COUNT
@@ -26,9 +26,9 @@ const char * parameter_names[PARAMETER_COUNT] =
 	"adc0_1x_2v",
 	"adc1_1x_0_1v",
 	"adc1_1x_2v",
-	"adc0_10x_0_1v",
+	"adc0_10x_1v",
 	"adc0_10x_20v",
-	"adc1_10x_0_1v",
+	"adc1_10x_1v",
 	"adc1_10x_20v",
 };
 

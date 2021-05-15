@@ -19,10 +19,10 @@ const int ADC_BITS = 12;
 
 struct
 {
-	float min_1x;
-	float max_1x;
-	float min_10x;
-	float max_10x;
+	uint16_t v1x_0_1v;
+	uint16_t v1x_2v;
+	uint16_t v10x_1v;
+	uint16_t v10x_20v;
 	uint16_t period;
 	uint16_t offset;
 	uint8_t flags; /* initialized, raw, amp, timestamp */
@@ -41,57 +41,53 @@ int adc_init()
 	nvs_handle_t nvs_handle;
 	err = nvs_open("SWT21 Lab kit", NVS_READWRITE, &nvs_handle);
 	if(err != ESP_OK)
-	{
-		printf("ERR ADC init failed!\n");
-		return -1;
-	}
+		goto esp_err;
 
+	cmd_queue = xQueueCreate(10, sizeof(struct cmd_event));
+	if(!cmd_queue)
+		goto esp_err;
 
 	for(int i = 0; i < ADC_COUNT; i++)
 	{
 		int error_flag = 0;
-		char parameter_name[24] = {0};
-		union
-		{
-			float f;
-			uint32_t u;
-		} value;
+		char parameter_name[25] = {0};
+		uint16_t value;
 
-		snprintf(parameter_name, 23, "adc%d_min_1x", i);
-		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
+		snprintf(parameter_name, 24, "adc%d_1x_0_1v", i);
+		err = nvs_get_u16(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
 			error_flag = 1;
 		}
-		adc_config[i].min_1x = value.f;
+		adc_config[i].v1x_0_1v = value;
 
-		snprintf(parameter_name, 23, "adc%d_max_1x", i);
-		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
+		snprintf(parameter_name, 24, "adc%d_1x_2v", i);
+		err = nvs_get_u16(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
 			error_flag = 1;
 		}
-		adc_config[i].max_1x = value.f;
+		adc_config[i].v1x_2v = value;
 
-		snprintf(parameter_name, 23, "adc%d_min_10x", i);
-		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
+		snprintf(parameter_name, 24, "adc%d_10x_0_1v", i);
+		err = nvs_get_u16(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
 			error_flag = 1;
 		}
-		adc_config[i].min_10x = value.f;
+		adc_config[i].v10x_1v = value;
 
-		snprintf(parameter_name, 23, "adc%d_max_10x", i);
-		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
+		snprintf(parameter_name, 24, "adc%d_10x_20v", i);
+		err = nvs_get_u16(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
 			error_flag = 1;
 		}
-		adc_config[i].max_10x = value.f;
+		adc_config[i].v10x_20v = value;
 
 		/* Set channel attenuation */
 		adc1_config_channel_atten(adc_channel[i], ADC_ATTEN_DB_11);
@@ -123,13 +119,13 @@ void adc_print_value(enum adc adc, uint16_t raw_value)
 		float value;
 
 		if(amp)
-			value = (adc_config[adc].max_10x - adc_config[adc].min_10x)
-				* raw_value / ((1<<ADC_BITS) - 1)
-				+ adc_config[adc].min_10x;
+			value = 1.0 +
+			        19.0/(adc_config[adc].v10x_20v - adc_config[adc].v10x_1v) *
+			        (raw_value - adc_config[adc].v10x_1v);
 		else
-			value = (adc_config[adc].max_1x - adc_config[adc].min_1x)
-				* raw_value / ((1<<ADC_BITS) - 1)
-				+ adc_config[adc].min_1x;
+			value = 0.1 +
+			        1.9/(adc_config[adc].v1x_2v - adc_config[adc].v1x_0_1v) *
+			        (raw_value - adc_config[adc].v1x_0_1v);
 
 		printf("ADC%d %0.3f\n", adc, value);
 	}

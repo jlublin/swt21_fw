@@ -137,7 +137,7 @@ void periodic_thread(void *parameters)
 		vTaskDelayUntil(&current_tick, 1);
 
 		if(previous_tick + 1 != current_tick)
-			printf("#\n"); // Overrun
+			printf("ERR: Periodic overrun!\n"); // Overrun
 
 		if(run_flags & RUN_FLAG_ADC0)
 		{

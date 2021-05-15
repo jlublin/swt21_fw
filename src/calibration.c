@@ -16,6 +16,14 @@ enum
 	PARAMETER_ADC0_10X_20V,
 	PARAMETER_ADC1_10X_1V,
 	PARAMETER_ADC1_10X_20V,
+	PARAMETER_DAC0_1X_MIN,
+	PARAMETER_DAC0_1X_MAX,
+	PARAMETER_DAC0_10X_MIN,
+	PARAMETER_DAC0_10X_MAX,
+	PARAMETER_DAC1_1X_MIN,
+	PARAMETER_DAC1_1X_MAX,
+	PARAMETER_DAC1_10X_MIN,
+	PARAMETER_DAC1_10X_MAX,
 
 	PARAMETER_COUNT
 };
@@ -30,6 +38,14 @@ const char * parameter_names[PARAMETER_COUNT] =
 	"adc0_10x_20v",
 	"adc1_10x_1v",
 	"adc1_10x_20v",
+	"dac0_min_1x",
+	"dac0_max_1x",
+	"dac0_min_10x",
+	"dac0_max_10x",
+	"dac1_min_1x",
+	"dac1_max_1x",
+	"dac1_min_10x",
+	"dac1_max_10x",
 };
 
 /*******************************************************************************

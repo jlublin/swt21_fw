@@ -18,6 +18,7 @@
 #include "calibration.h"
 #include "can.h"
 #include "led.h"
+#include "lin.h"
 //#include "uart.h"
 
 static void hci_line_handler(char *line);

@@ -263,43 +263,33 @@ static void hci_line_handler(char *line)
 			"led help - write all led commands\n"
 			"hello - say hello\n");
 	}
-	else if(strcmp(cmd, "echo") == 0)
-	{
-		printf("Echo: %s\n", strtok(NULL, ""));
-	}
 	else if(strcmp(cmd, "adc0") == 0)
-	{
 		adc_command(0);
-	}
+
 	else if(strcmp(cmd, "adc1") == 0)
-	{
 		adc_command(1);
-	}
+
 	else if(strcmp(cmd, "dac0") == 0)
-	{
 		dac_command(0);
-	}
+
 	else if(strcmp(cmd, "dac1") == 0)
-	{
 		dac_command(1);
-	}
+
 	else if(strcmp(cmd, "calibration") == 0)
-	{
 		calibration_command();
-	}
+
 	else if(strcmp(cmd, "can") == 0)
-	{
 		can_command();
-	}
+
 	else if(strcmp(cmd, "led") == 0)
-	{
 		led_command();
-	}
+
+	else if(strcmp(cmd, "lin") == 0)
+		lin_command();
 #if 0
-	else if(strncmp(cmd, "UART", 4) == 0)
-	{
+	else if(strncmp(cmd, "uart", 4) == 0)
 //		cmd_uart(cmd[4], line);
-	}
+
 #endif
 	else
 		printf("ERR Unknown command\n");

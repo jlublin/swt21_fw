@@ -8,27 +8,28 @@
 
 enum
 {
-	PARAMETER_ADC0_MIN_1X = 0,
-	PARAMETER_ADC0_MAX_1X,
-	PARAMETER_ADC0_MIN_10X,
-	PARAMETER_ADC0_MAX_10X,
-	PARAMETER_ADC1_MIN_1X,
-	PARAMETER_ADC1_MAX_1X,
-	PARAMETER_ADC1_MIN_10X,
-	PARAMETER_ADC1_MAX_10X,
+	PARAMETER_ADC0_1X_0_1V = 0,
+	PARAMETER_ADC0_1X_2V,
+	PARAMETER_ADC1_1X_0_1V,
+	PARAMETER_ADC1_1X_2V,
+	PARAMETER_ADC0_10X_0_1V,
+	PARAMETER_ADC0_10X_20V,
+	PARAMETER_ADC1_10X_0_1V,
+	PARAMETER_ADC1_10X_20V,
+
 	PARAMETER_COUNT
 };
 
 const char * parameter_names[PARAMETER_COUNT] =
 {
-	"adc0_min_1x",
-	"adc0_max_1x",
-	"adc0_min_10x",
-	"adc0_max_10x",
-	"adc1_min_1x",
-	"adc1_max_1x",
-	"adc1_min_10x",
-	"adc1_max_10x"
+	"adc0_1x_0_1v",
+	"adc0_1x_2v",
+	"adc1_1x_0_1v",
+	"adc1_1x_2v",
+	"adc0_10x_0_1v",
+	"adc0_10x_20v",
+	"adc1_10x_0_1v",
+	"adc1_10x_20v",
 };
 
 /*******************************************************************************

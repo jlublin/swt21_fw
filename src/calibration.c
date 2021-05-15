@@ -89,7 +89,6 @@ get_err:
 	nvs_close(nvs_handle);
 
 open_err:
-	printf("ERR Could not read parameter\n");
 	return -1;
 
 }
@@ -178,9 +177,9 @@ void calibration_command()
 			uint32_t value;
 
 			if(read_parameter_value(parameter, &value) < 0)
-				printf("%s Invalid\n", parameter);
+				printf("%s\t<not set>\n", parameter);
 			else
-				printf("%s %u\n", parameter, value);
+				printf("%s\t%u\n", parameter, value);
 		}
 	}
 	else if(strcmp(cmd, "write") == 0)
@@ -220,7 +219,10 @@ void calibration_command()
 		/* Read parameter value */
 		uint32_t value;
 		if(read_parameter_value(parameter, &value) < 0)
+		{
+			printf("ERR Could not read parameter\n");
 			return;
+		}
 
 		printf("OK %d\n", value);
 	}

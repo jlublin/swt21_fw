@@ -80,6 +80,20 @@ int can_init()
 	return 0;
 }
 
+int can_reinstall()
+{
+	twai_stop();
+	twai_driver_uninstall();
+
+	/* Setup default timing */
+	err = can_driver_install(&config, &can_config.timing, &can_config.filter);
+
+	if(err != ESP_OK)
+		return -1;
+
+	return 0;
+}
+
 int parse_message_format(can_message_t *msg, const char *fmt)
 {
 	uint32_t id;
@@ -134,9 +148,14 @@ void can_command()
 		printf(
 			"Available commands:\n"
 			"\n"
-			"help - write this text\n"
-			"echo - echo all arguments\n"
-			"hello - say hello\n");
+			"can help - write this text\n"
+			"can rx on/off - enable or disable RX\n",
+			"can send <id>#<data in hex> - e.g. send 13f#02e8\n",
+			"can config brp [value] - get or set current can brp\n",
+			"can config tseg_1 [value] - get or set current can tseg_1\n",
+			"can config tseg_2 [value] - get or set current can tseg_2\n",
+			"can config sjw [value] - get or set current can sjw\n",
+			"\n");
 	}
 	else if(strcmp(cmd, "rx") == 0)
 	{
@@ -169,6 +188,98 @@ void can_command()
 	}
 	else if(strcmp(cmd, "config") == 0)
 	{
+		/* Read value argument */
+		const char *arg = strtok(NULL, " ");
+		if(!arg)
+			goto einval;
+
+		if(strcmp(arg, "brp") == 0)
+		{
+			const char *value_str = strtok(NULL, " ");
+
+			if(!value_str)
+				printf("OK %d\n", can_config.timing.brp);
+
+			else
+			{
+				int value = atoi(value_str);
+
+				if(value < 2 || value > 127 || value % 2)
+					goto einval;
+
+				can_config.timing.brp = value;
+				if(can_reinstall() < 0)
+					printf("ERR Unknown error\n");
+				else
+					printf("OK\n");
+			}
+		}
+		else if(strcmp(arg, "tseg_1") == 0)
+		{
+			const char *value_str = strtok(NULL, " ");
+
+			if(!value_str)
+				printf("OK %d\n", can_config.timing.tseg_1);
+
+			else
+			{
+				int value = atoi(value_str);
+
+				if(value < 1 || value > 16 )
+					goto einval;
+
+				can_config.timing.tseg_1 = value;
+				if(can_reinstall() < 0)
+					printf("ERR Unknown error\n");
+				else
+					printf("OK\n");
+			}
+		}
+		else if(strcmp(arg, "tseg_2") == 0)
+		{
+			const char *value_str = strtok(NULL, " ");
+
+			if(!value_str)
+				printf("OK %d\n", can_config.timing.tseg_2);
+
+			else
+			{
+				int value = atoi(value_str);
+
+				if(value < 1 || value > 8 )
+					goto einval;
+
+				can_config.timing.tseg_2 = value;
+				if(can_reinstall() < 0)
+					printf("ERR Unknown error\n");
+				else
+					printf("OK\n");
+			}
+		}
+		else if(strcmp(arg, "sjw") == 0)
+		{
+			const char *value_str = strtok(NULL, " ");
+
+			if(!value_str)
+				printf("OK %d\n", can_config.timing.sjw);
+
+			else
+			{
+				int value = atoi(value_str);
+
+				if(value < 1 || value > 4 )
+					goto einval;
+
+				can_config.timing.sjw = value;
+
+				if(can_reinstall() < 0)
+					printf("ERR Unknown error\n");
+				else
+					printf("OK\n");
+			}
+		}
+		else
+			goto einval;
 	}
 	else if(strcmp(cmd, "status") == 0)
 	{

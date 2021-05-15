@@ -51,10 +51,10 @@ int adc_init()
 	{
 		int error_flag = 0;
 		char parameter_name[25] = {0};
-		uint16_t value;
+		uint32_t value;
 
 		snprintf(parameter_name, 24, "adc%d_1x_0_1v", i);
-		err = nvs_get_u16(nvs_handle, parameter_name, &value);
+		err = nvs_get_u32(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
@@ -63,7 +63,7 @@ int adc_init()
 		adc_config[i].v1x_0_1v = value;
 
 		snprintf(parameter_name, 24, "adc%d_1x_2v", i);
-		err = nvs_get_u16(nvs_handle, parameter_name, &value);
+		err = nvs_get_u32(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
@@ -72,7 +72,7 @@ int adc_init()
 		adc_config[i].v1x_2v = value;
 
 		snprintf(parameter_name, 24, "adc%d_10x_0_1v", i);
-		err = nvs_get_u16(nvs_handle, parameter_name, &value);
+		err = nvs_get_u32(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
@@ -81,7 +81,7 @@ int adc_init()
 		adc_config[i].v10x_1v = value;
 
 		snprintf(parameter_name, 24, "adc%d_10x_20v", i);
-		err = nvs_get_u16(nvs_handle, parameter_name, &value);
+		err = nvs_get_u32(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);

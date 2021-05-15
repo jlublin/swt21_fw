@@ -23,6 +23,19 @@ struct
 	uint8_t flags; /* initialized, rx */
 } can_config;
 
+can_general_config_t config =
+{
+	.mode = CAN_MODE_NORMAL,
+	.tx_io = can_tx_pin,
+	.rx_io = can_rx_pin,
+	.clkout_io = -1,
+	.bus_off_io = -1,
+	.tx_queue_len = 10,
+	.rx_queue_len = 10,
+	.alerts_enabled = CAN_ALERT_NONE,
+	.clkout_divider = 0
+};
+
 const uint8_t CAN_FLAG_INIT = 1 << 0;
 const uint8_t CAN_FLAG_RX_ON = 1 << 1;
 
@@ -43,19 +56,6 @@ enum
 int can_init()
 {
 	esp_err_t err;
-
-	can_general_config_t config =
-	{
-		.mode = CAN_MODE_NORMAL,
-		.tx_io = can_tx_pin,
-		.rx_io = can_rx_pin,
-		.clkout_io = -1,
-		.bus_off_io = -1,
-		.tx_queue_len = 10,
-		.rx_queue_len = 10,
-		.alerts_enabled = CAN_ALERT_NONE,
-		.clkout_divider = 0
-	};
 
 	/* Setup default timing */
 	can_config.timing.brp = 8;
@@ -82,8 +82,10 @@ int can_init()
 
 int can_reinstall()
 {
-	twai_stop();
-	twai_driver_uninstall();
+	esp_err_t err;
+
+	can_stop();
+	can_driver_uninstall();
 
 	/* Setup default timing */
 	err = can_driver_install(&config, &can_config.timing, &can_config.filter);
@@ -161,9 +163,9 @@ void can_command()
 	{
 		const char *arg = strtok(NULL, " ");
 
-		if(strcmp(cmd, "on") == 0)
+		if(strcmp(arg, "on") == 0)
 			can_rx_on();
-		else if(strcmp(cmd, "off") == 0)
+		else if(strcmp(arg, "off") == 0)
 			can_rx_off();
 		else
 			goto einval;

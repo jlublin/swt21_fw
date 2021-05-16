@@ -101,6 +101,14 @@ void hci_print_str(const char *format, ...)
 }
 
 /*******************************************************************************
+ * May be called from other threads
+ ******************************************************************************/
+void hci_print_bytes(const uint8_t *data, int len)
+{
+	uart_write_bytes(uart, (const char*)data, len);
+}
+
+/*******************************************************************************
  *
  ******************************************************************************/
 static const char *get_reset_reason()
@@ -147,7 +155,7 @@ void hci_init()
 		.flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
 	};
 	uart_param_config(uart, &uart_config);
-	uart_driver_install(uart, 1024, 1024, 10, &uart_queue, 0);
+	uart_driver_install(uart, 1024, 8192, 10, &uart_queue, 0);
 
 	const char *reset_reason = get_reset_reason();
 
@@ -155,6 +163,8 @@ void hci_init()
 	printf("Firmware version: %s\n", GIT_TAG);
 	printf("Source code revision: %s\n", GIT_REV);
 	printf("Reset reason: %s\n\n", reset_reason);
+
+	/* TODO: clear rx buffer */
 }
 
 /*******************************************************************************

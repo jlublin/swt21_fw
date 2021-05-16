@@ -164,7 +164,8 @@ void hci_init()
 	printf("Source code revision: %s\n", GIT_REV);
 	printf("Reset reason: %s\n\n", reset_reason);
 
-	/* TODO: clear rx buffer */
+	/* Clear RX buffer */
+	uart_flush(uart);
 }
 
 /*******************************************************************************

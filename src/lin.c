@@ -486,11 +486,11 @@ static void send_lin_header(int id)
 
 void lin_thread(void *parameters)
 {
-	/* Check that CAN initialized correctly */
+	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
+
+	/* Check that LIN initialized correctly */
 	while(!(lin_config.flags & LIN_FLAG_INIT))
 		vTaskDelay(100 * portTICK_PERIOD_MS);
-
-	esp_task_wdt_delete(xTaskGetCurrentTaskHandle());
 
 	lin_queue_set = xQueueCreateSet(20);
 	xQueueAddToSet(uart_queue, lin_queue_set);

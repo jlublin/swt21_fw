@@ -19,7 +19,7 @@
 #include "can.h"
 #include "led.h"
 #include "lin.h"
-//#include "uart.h"
+#include "uart.h"
 
 static void hci_line_handler(char *line);
 
@@ -287,11 +287,10 @@ static void hci_line_handler(char *line)
 
 	else if(strcmp(cmd, "lin") == 0)
 		lin_command();
-#if 0
-	else if(strncmp(cmd, "uart", 4) == 0)
-//		cmd_uart(cmd[4], line);
 
-#endif
+	else if(strcmp(cmd, "uart") == 0)
+		uart_command();
+
 	else
 		printf("ERR Unknown command\n");
 }

@@ -246,7 +246,8 @@ void adc_command(int adc)
 			"                                              n values after\n"
 			"adc0 trig off - disable trig\n"
 			"adc%d config raw <on/off> - enable or disable raw values\n"
-			"\n", adc, adc, adc, adc, adc);
+			"adc%d config 10x <on/off> - enable 10x, otherwise 1x\n"
+			"\n", adc, adc, adc, adc, adc, adc);
 	}
 	else if(strcmp(cmd, "off") == 0)
 	{
@@ -378,6 +379,32 @@ void adc_command(int adc)
 			else if(strcmp(arg, "off") == 0)
 			{
 				adc_config[adc].flags &= ~ADC_FLAG_RAW;
+				printf("OK\n");
+				return;
+			}
+			else
+				goto einval;
+		}
+
+		else if(strcmp(param, "10x") == 0)
+		{
+			/* on/off */
+			char *arg;
+
+			/* Read id argument */
+			arg = strtok(NULL, " ");
+			if(!arg)
+				goto einval;
+
+			if(strcmp(arg, "on") == 0)
+			{
+				adc_config[adc].flags |= ADC_FLAG_AMP10X;
+				printf("OK\n");
+				return;
+			}
+			else if(strcmp(arg, "off") == 0)
+			{
+				adc_config[adc].flags &= ~ADC_FLAG_AMP10X;
 				printf("OK\n");
 				return;
 			}

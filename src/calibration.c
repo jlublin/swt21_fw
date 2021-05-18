@@ -19,11 +19,11 @@ enum
 	PARAMETER_DAC0_1X_MIN,
 	PARAMETER_DAC0_1X_MAX,
 	PARAMETER_DAC0_10X_MIN,
-	PARAMETER_DAC0_10X_MAX,
+	PARAMETER_DAC0_10X_80,
 	PARAMETER_DAC1_1X_MIN,
 	PARAMETER_DAC1_1X_MAX,
 	PARAMETER_DAC1_10X_MIN,
-	PARAMETER_DAC1_10X_MAX,
+	PARAMETER_DAC1_10X_80,
 
 	PARAMETER_COUNT
 };
@@ -41,11 +41,11 @@ const char * parameter_names[PARAMETER_COUNT] =
 	"dac0_min_1x",
 	"dac0_max_1x",
 	"dac0_min_10x",
-	"dac0_max_10x",
+	"dac0_80_10x",
 	"dac1_min_1x",
 	"dac1_max_1x",
 	"dac1_min_10x",
-	"dac1_max_10x",
+	"dac1_80_10x",
 };
 
 /*******************************************************************************

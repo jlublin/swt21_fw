@@ -77,7 +77,7 @@ int dac_init()
 		}
 		dac_config[i].min_10x = value.f;
 
-		snprintf(parameter_name, 23, "dac%d_max_10x", i);
+		snprintf(parameter_name, 23, "dac%d_80_10x", i);
 		err = nvs_get_u32(nvs_handle, parameter_name, &value.u);
 		if(err)
 		{
@@ -137,7 +137,7 @@ void dac_command(int dac)
 				goto einval;
 
 			uint8_t value =
-				(voltage - dac_config[dac].min_10x) * 255 /
+				(voltage - dac_config[dac].min_10x) * 80 /
 				(dac_config[dac].max_10x - dac_config[dac].min_10x);
 
 			dac_output_voltage(dac_channel[dac], value);

@@ -22,9 +22,9 @@ const int ADC_BITS = 12;
 
 struct
 {
-	uint16_t v1x_0_1v;
+	uint16_t v1x_0_2v;
 	uint16_t v1x_2v;
-	uint16_t v10x_1v;
+	uint16_t v10x_2v;
 	uint16_t v10x_20v;
 	uint16_t period;
 	uint16_t offset;
@@ -79,14 +79,14 @@ int adc_init()
 		char parameter_name[25] = {0};
 		uint32_t value;
 
-		snprintf(parameter_name, 24, "adc%d_1x_0_1v", i);
+		snprintf(parameter_name, 24, "adc%d_1x_0_2v", i);
 		err = nvs_get_u32(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
 			error_flag = 1;
 		}
-		adc_config[i].v1x_0_1v = value;
+		adc_config[i].v1x_0_2v = value;
 
 		snprintf(parameter_name, 24, "adc%d_1x_2v", i);
 		err = nvs_get_u32(nvs_handle, parameter_name, &value);
@@ -97,14 +97,14 @@ int adc_init()
 		}
 		adc_config[i].v1x_2v = value;
 
-		snprintf(parameter_name, 24, "adc%d_10x_0_1v", i);
+		snprintf(parameter_name, 24, "adc%d_10x_0_2v", i);
 		err = nvs_get_u32(nvs_handle, parameter_name, &value);
 		if(err)
 		{
 			printf("ERR %s not configured\n", parameter_name);
 			error_flag = 1;
 		}
-		adc_config[i].v10x_1v = value;
+		adc_config[i].v10x_2v = value;
 
 		snprintf(parameter_name, 24, "adc%d_10x_20v", i);
 		err = nvs_get_u32(nvs_handle, parameter_name, &value);
@@ -193,13 +193,13 @@ void adc_print_value(enum adc adc, uint16_t raw_value)
 		float value;
 
 		if(amp)
-			value = 1.0 +
-			        19.0/(adc_config[adc].v10x_20v - adc_config[adc].v10x_1v) *
-			        (raw_value - adc_config[adc].v10x_1v);
+			value = 2.0 +
+			        18.0/(adc_config[adc].v10x_20v - adc_config[adc].v10x_2v) *
+			        (raw_value - adc_config[adc].v10x_2v);
 		else
-			value = 0.1 +
-			        1.9/(adc_config[adc].v1x_2v - adc_config[adc].v1x_0_1v) *
-			        (raw_value - adc_config[adc].v1x_0_1v);
+			value = 0.2 +
+			        1.8/(adc_config[adc].v1x_2v - adc_config[adc].v1x_0_2v) *
+			        (raw_value - adc_config[adc].v1x_0_2v);
 
 		printf("ADC%d %0.3f\n", adc, value);
 	}

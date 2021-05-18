@@ -8,13 +8,13 @@
 
 enum
 {
-	PARAMETER_ADC0_1X_0_1V = 0,
+	PARAMETER_ADC0_1X_0_2V = 0,
 	PARAMETER_ADC0_1X_2V,
-	PARAMETER_ADC1_1X_0_1V,
+	PARAMETER_ADC1_1X_0_2V,
 	PARAMETER_ADC1_1X_2V,
-	PARAMETER_ADC0_10X_1V,
+	PARAMETER_ADC0_10X_2V,
 	PARAMETER_ADC0_10X_20V,
-	PARAMETER_ADC1_10X_1V,
+	PARAMETER_ADC1_10X_2V,
 	PARAMETER_ADC1_10X_20V,
 	PARAMETER_DAC0_1X_MIN,
 	PARAMETER_DAC0_1X_MAX,
@@ -30,13 +30,13 @@ enum
 
 const char * parameter_names[PARAMETER_COUNT] =
 {
-	"adc0_1x_0_1v",
+	"adc0_1x_0_2v",
 	"adc0_1x_2v",
-	"adc1_1x_0_1v",
+	"adc1_1x_0_2v",
 	"adc1_1x_2v",
-	"adc0_10x_1v",
+	"adc0_10x_2v",
 	"adc0_10x_20v",
-	"adc1_10x_1v",
+	"adc1_10x_2v",
 	"adc1_10x_20v",
 	"dac0_min_1x",
 	"dac0_max_1x",

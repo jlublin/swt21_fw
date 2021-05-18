@@ -240,7 +240,10 @@ void adc_command(int adc)
 			"\n"
 			"adc%d off - turn off periodic adc\n"
 			"adc%d single - convert single value\n"
+#if 0
+	/* This is TODO */
 			"adc%d periodic <period (ms)> [offset (ms)] - convert periodically\n"
+#endif
 			"adc0 trig <trig value> <sample rate> <m> <n> - wait for trigger and\n"
 			"                                              convert m values before and\n"
 			"                                              n values after\n"
@@ -257,6 +260,8 @@ void adc_command(int adc)
 	{
 		adc_print_value(adc, adc_single(adc));
 	}
+#if 0
+	/* This is TODO */
 	else if(strcmp(cmd, "periodic") == 0)
 	{
 		int period;
@@ -284,6 +289,7 @@ void adc_command(int adc)
 		/* Send command */
 		adc_periodic(period, offset);
 	}
+#endif
 	else if(strcmp(cmd, "test") == 0)
 	{
 		adc_off();

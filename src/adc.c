@@ -245,7 +245,8 @@ void adc_command(int adc)
 			"                                              convert m values before and\n"
 			"                                              n values after\n"
 			"adc0 trig off - disable trig\n"
-			"\n", adc, adc, adc, adc);
+			"adc%d config raw <on/off> - enable or disable raw values\n"
+			"\n", adc, adc, adc, adc, adc);
 	}
 	else if(strcmp(cmd, "off") == 0)
 	{
@@ -351,6 +352,38 @@ void adc_command(int adc)
 		/* Send command */
 		adc_off();
 		adc_trig(value, sample_rate, m, n);
+	}	else if(strcmp(cmd, "config") == 0)
+	{
+		/* Read config argument */
+		const char *param = strtok(NULL, " ");
+		if(!param)
+			goto einval;
+
+		if(strcmp(param, "raw") == 0)
+		{
+			/* on/off */
+			char *arg;
+
+			/* Read id argument */
+			arg = strtok(NULL, " ");
+			if(!arg)
+				goto einval;
+
+			if(strcmp(arg, "on") == 0)
+			{
+				adc_config[adc].flags |= ADC_FLAG_RAW;
+				printf("OK\n");
+				return;
+			}
+			else if(strcmp(arg, "off") == 0)
+			{
+				adc_config[adc].flags &= ~ADC_FLAG_RAW;
+				printf("OK\n");
+				return;
+			}
+			else
+				goto einval;
+		}
 	}
 	else
 		goto einval;

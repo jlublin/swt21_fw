@@ -97,7 +97,7 @@ int adc_init()
 		}
 		adc_config[i].v1x_2v = value;
 
-		snprintf(parameter_name, 24, "adc%d_10x_0_2v", i);
+		snprintf(parameter_name, 24, "adc%d_10x_2v", i);
 		err = nvs_get_u32(nvs_handle, parameter_name, &value);
 		if(err)
 		{

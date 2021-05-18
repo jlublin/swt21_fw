@@ -62,6 +62,12 @@ int can_init()
 	can_config.timing.tseg_1 = 5;
 	can_config.timing.tseg_2 = 4;
 	can_config.timing.sjw = 1;
+
+	/* Setup default filter */
+	can_config.filter.acceptance_code = 0;
+	can_config.filter.acceptance_mask = 0xffffffff;
+	can_config.filter.single_filter = 1;
+
 	err = can_driver_install(&config, &can_config.timing, &can_config.filter);
 
 	if(err != ESP_OK)
@@ -77,6 +83,8 @@ int can_init()
 		return -1;
 	}
 
+	can_config.flags |= CAN_FLAG_INIT;
+
 	return 0;
 }
 
@@ -89,6 +97,11 @@ int can_reinstall()
 
 	/* Setup default timing */
 	err = can_driver_install(&config, &can_config.timing, &can_config.filter);
+
+	if(err != ESP_OK)
+		return -1;
+
+	err = can_start();
 
 	if(err != ESP_OK)
 		return -1;
@@ -333,18 +346,20 @@ void can_rx_thread(void *parameters)
 	while(1)
 	{
 		can_message_t msg;
-		if(can_receive(&msg, 0) == ESP_OK && rx_running)
+		while(can_receive(&msg, 100) == ESP_OK)
 		{
-			printf("CAN frame %x#");
-			if(msg.flags & CAN_MSG_FLAG_RTR)
-				printf("R");
-			else
-				for(int i = 0; i < msg.data_length_code; i++)
-					printf("%02x", msg.data[i]);
+			if(rx_running)
+			{
+				printf("CAN frame %x#", msg.identifier);
+				if(msg.flags & CAN_MSG_FLAG_RTR)
+					printf("R");
+				else
+					for(int i = 0; i < msg.data_length_code; i++)
+						printf("%02x", msg.data[i]);
 
-			printf("\n");
+				printf("\n");
+			}
 		}
-
 
 		struct can_rx_event event;
 		if(xQueueReceive(can_rx_queue, &event, 0))

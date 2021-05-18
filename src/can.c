@@ -350,7 +350,7 @@ void can_rx_thread(void *parameters)
 		{
 			if(rx_running)
 			{
-				printf("CAN frame %x#", msg.identifier);
+				printf("CAN RX: %x#", msg.identifier);
 				if(msg.flags & CAN_MSG_FLAG_RTR)
 					printf("R");
 				else

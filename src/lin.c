@@ -481,7 +481,7 @@ static void handle_lin_rx(uint8_t id, uint8_t *data, int len)
 	for(int i = 0; i < len; i++)
 		sprintf(&buf[2*i], "%02x", data[i]);
 
-	printf("LIN: %d#%s\n", id, buf);
+	printf("LIN RX: %d#%s\n", id, buf);
 }
 
 static void send_lin_header(int id)

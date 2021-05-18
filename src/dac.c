@@ -119,7 +119,7 @@ void dac_command(int dac)
 			"\n"
 			"dac%d voltage <voltage> - set dac voltage\n"
 			"dac%d raw <value> - set dac raw value (0-255)\n"
-			"dac%d config amp10x [1/0] - set or get current amplification\n"
+			"dac%d config 10x [on/off] - set or get current amplification\n"
 			"\n", dac, dac, dac);
 	}
 	else if(strcmp(cmd, "voltage") == 0)
@@ -176,23 +176,26 @@ void dac_command(int dac)
 		if(!arg)
 			goto einval;
 
-		if(strcmp(arg, "amp10x") == 0)
+		if(strcmp(arg, "10x") == 0)
 		{
 			const char *value_str = strtok(NULL, " ");
 			if(!value_str)
 			{
 				if(dac_config[dac].flags & DAC_FLAG_AMP10X)
-					printf("OK 1\n");
+					printf("OK on\n");
 				else
-					printf("OK 0\n");
+					printf("OK off\n");
 			}
 			else
 			{
-				int value = atoi(value_str);
-				if(value == 1)
+				if(strcmp(value_str, "on") == 0)
 					dac_config[dac].flags |= DAC_FLAG_AMP10X;
-				else
+				else if(strcmp(value_str, "off") == 0)
 					dac_config[dac].flags &= ~DAC_FLAG_AMP10X;
+				else
+					goto einval;
+
+				printf("OK\n");
 			}
 		}
 		else

@@ -181,20 +181,29 @@ void lin_command()
 		printf("OK\n");
 		printf(
 			"Available commands:\n"
+			"<id> is decimal\n"
+			"<data> is hexadecimal\n"
+			"<chks-type> is checksum type with: 0: classic, 1: enhanced\n"
 			"\n"
-			"lin txbuf <id>#<data> - decimal id, hexadecimal data\n"
-			"lin single <id> - \n"
-			"lin config rx <id> <len> <chks-type> -(0 - classic, 1 - enhanced)\n"
-			"lin config rx <id> off - disable rx for id\n"
+			"lin txbuf <id>#<data> - set LIN response data\n"
+			"lin single <id> - send single LIN header\n"
+			"lin config rx <id> <len> <chks-type> - configure LIN id for reading with\n"
+			"                                       len and checksum\n"
+			"lin config rx <id> off - disable reading for id\n"
 			"lin config rx <id> - read current rx state for id\n"
-			"lin config tx <id> <len> <chks-type> - \n"
-			"lin config tx <id> off \n"
+			"lin config tx <id> <len> <chks-type> - configure LIN id for writing\n"
+			"lin config tx <id> off - disable writing for id\n"
 			"lin config tx <id> - read current tx state for id\n"
+#if 0
+/*
+ * LIN schedule is TODO in a later release
+ */
 			"lin config master [1/0] - get or set master role\n"
 			"lin config schedule <id> <period> <offset>  - \n"
 			"lin config schedule <id> off - \n"
 			"lin config schedule <id> - get id schedule\n"
 			"lin config schedule - get schedule\n"
+#endif
 			"\n");
 	}
 	else if(strcmp(cmd, "on") == 0)

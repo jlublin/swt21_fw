@@ -164,8 +164,8 @@ void calibration_command()
 			"Available commands:\n"
 			"\n"
 			"calibration list - print out all calibration parameters\n"
-			"calibration write <parameter> <value> - write value to parameter\n"
-			"calibration read <parameter> - print out current parameter value\n");
+			"calibration write <parameter> <value> - write value to parameter (u32)\n"
+			"calibration read <parameter> - print out current parameter value (u32)\n");
 	}
 	else if(strcmp(cmd, "list") == 0)
 	{

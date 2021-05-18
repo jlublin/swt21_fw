@@ -151,12 +151,12 @@ void can_command()
 			"Available commands:\n"
 			"\n"
 			"can help - write this text\n"
-			"can rx on/off - enable or disable RX\n",
-			"can send <id>#<data in hex> - e.g. send 13f#02e8\n",
-			"can config brp [value] - get or set current can brp\n",
-			"can config tseg_1 [value] - get or set current can tseg_1\n",
-			"can config tseg_2 [value] - get or set current can tseg_2\n",
-			"can config sjw [value] - get or set current can sjw\n",
+			"can rx on/off - enable or disable RX\n"
+			"can send <id>#<data in hex> - e.g. send 13f#02e8\n"
+			"can config brp [value] - get or set current can brp\n"
+			"can config tseg_1 [value] - get or set current can tseg_1\n"
+			"can config tseg_2 [value] - get or set current can tseg_2\n"
+			"can config sjw [value] - get or set current can sjw\n"
 			"\n");
 	}
 	else if(strcmp(cmd, "rx") == 0)

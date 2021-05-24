@@ -172,15 +172,15 @@ Steps:
 \section{CAN}
 The CAN bus can be used to send and recive 11-bit ID CAN frames.
 When sending frames they can only be sent as single frames. Single frames are
-enqueued on the transmit buffer immediately after a "CAN send" command has been sent.
+enqueued on the transmit buffer immediately after a "can send" command has been sent.
 
 \subsection{CAN commands}
-\subsubsection{CAN help}
+\subsubsection{can help}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	CAN help
+	can help
 
 	\medskip
 	{\bf Description}
@@ -196,12 +196,12 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 	<help text>
 \end{tcolorbox}
 
-\subsubsection{CAN rx}
+\subsubsection{can rx}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	CAN rx \{on|off\}
+	can rx \{on|off\}
 
 	\medskip
 	{\bf Description}
@@ -218,12 +218,12 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 	OK
 \end{tcolorbox}
 
-\subsubsection{CAN send}
+\subsubsection{can send}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	CAN send <can\_id>\#\{R|data\}
+	can send <can\_id>\#\{R|data\}
 
 	\medskip
 	{\bf Description}
@@ -247,12 +247,12 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 	ERR Overflow
 \end{tcolorbox}
 
-\subsubsection{CAN config}
+\subsubsection{can config}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	CAN config <config key> [<arg>]
+	can config <config key> [<arg>]
 
 	\medskip
 	{\bf Description}
@@ -271,7 +271,7 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 	ERR Invalid argument
 \end{tcolorbox}
 
-\subsubsubsection{CAN config brp}
+\subsubsubsection{can config brp}
 \begin{tcolorbox}
 	{\bf Config key}
 
@@ -290,10 +290,10 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
 	This configuration sets the CAN baudrate prescaler. The final baudrate can
 	be calculated from \vspace{2mm} \\
-	\fbox{$\textrm{CAN bitrate} = \frac{80 000 000}{brp * (1 + tseg\_1 + tseg\_2)}$}
+	\fbox{$\textrm{can bitrate} = \frac{80 000 000}{brp * (1 + tseg\_1 + tseg\_2)}$}
 \end{tcolorbox}
 
-\subsubsubsection{CAN config tseg\_1}
+\subsubsubsection{can config tseg\_1}
 \begin{tcolorbox}
 	{\bf Config key}
 
@@ -312,10 +312,10 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
 	This configuration sets the number of time quantas for CAN tseg\_1. The final baudrate can
 	be calculated from \vspace{2mm} \\
-	\fbox{$\textrm{CAN bitrate} = \frac{80 000 000}{brp * (1 + tseg\_1 + tseg\_2)}$}
+	\fbox{$\textrm{can bitrate} = \frac{80 000 000}{brp * (1 + tseg\_1 + tseg\_2)}$}
 \end{tcolorbox}
 
-\subsubsubsection{CAN config tseg\_2}
+\subsubsubsection{can config tseg\_2}
 \begin{tcolorbox}
 	{\bf Config key}
 
@@ -334,10 +334,10 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
 	This configuration sets the number of time quantas for CAN tseg\_2. The final baudrate can
 	be calculated from \vspace{2mm} \\
-	\fbox{$\textrm{CAN bitrate} = \frac{80 000 000}{brp * (1 + tseg\_1 + tseg\_2)}$}
+	\fbox{$\textrm{can bitrate} = \frac{80 000 000}{brp * (1 + tseg\_1 + tseg\_2)}$}
 \end{tcolorbox}
 
-\subsubsubsection{CAN config sjw}
+\subsubsubsection{can config sjw}
 \begin{tcolorbox}
 	{\bf Config key}
 
@@ -385,16 +385,16 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 
 The LIN bus can be used to send and recive LIN 2.2 frames.
 When sending frames they can only be sent as single frames. Single frames are
-enqueued on the transmit buffer immediately after a "LIN single" command has been sent.
+enqueued on the transmit buffer immediately after a "lin single" command has been sent.
 
 
 \subsection{LIN commands}
-\subsubsection{LIN help}
+\subsubsection{lin help}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	LIN help
+	lin help
 
 	\medskip
 	{\bf Description}
@@ -410,12 +410,12 @@ enqueued on the transmit buffer immediately after a "LIN single" command has bee
 	<help text>
 \end{tcolorbox}
 
-\subsubsection{LIN txbuf}
+\subsubsection{lin txbuf}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	LIN txbuf <id>\#<data>
+	lin txbuf <id>\#<data>
 
 	\medskip
 	{\bf Description}
@@ -436,12 +436,12 @@ enqueued on the transmit buffer immediately after a "LIN single" command has bee
 	ERR Invalid argument
 \end{tcolorbox}
 
-\subsubsection{LIN single}
+\subsubsection{lin single}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	LIN single <id>
+	lin single <id>
 
 	\medskip
 	{\bf Description}
@@ -459,12 +459,12 @@ enqueued on the transmit buffer immediately after a "LIN single" command has bee
 	OK
 \end{tcolorbox}
 
-\subsubsection{LIN config}
+\subsubsection{lin config}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	LIN config <config key> [<arg>]
+	lin config <config key> [<arg>]
 
 	\medskip
 	{\bf Description}
@@ -483,7 +483,7 @@ enqueued on the transmit buffer immediately after a "LIN single" command has bee
 	ERR Invalid argument
 \end{tcolorbox}
 
-\subsubsubsection{LIN config rx [<id> <len> <chks-type>] | off]}
+\subsubsubsection{lin config rx [<id> <len> <chks-type>] | off]}
 \begin{tcolorbox}
 	{\bf Config key}
 
@@ -506,7 +506,7 @@ enqueued on the transmit buffer immediately after a "LIN single" command has bee
 	node. Using the off key will disable receiving this LIN frame.
 \end{tcolorbox}
 
-\subsubsubsection{LIN config tx [<id> <len> <chks-type>] | off]}
+\subsubsubsection{lin config tx [<id> <len> <chks-type>] | off]}
 \begin{tcolorbox}
 	{\bf Config key}
 
@@ -557,12 +557,12 @@ The UART can be used to send and recive UART characters.
 
 
 \subsection{UART commands}
-\subsubsection{UART help}
+\subsubsection{uart help}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	UART help
+	uart help
 
 	\medskip
 	{\bf Description}
@@ -578,12 +578,12 @@ The UART can be used to send and recive UART characters.
 	<help text>
 \end{tcolorbox}
 
-\subsubsection{UART sendline}
+\subsubsection{uart sendline}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	UART sendline <text>
+	uart sendline <text>
 
 	\medskip
 	{\bf Description}
@@ -604,12 +604,12 @@ The UART can be used to send and recive UART characters.
 	ERR Invalid argument
 \end{tcolorbox}
 
-\subsubsection{UART config}
+\subsubsection{uart config}
 \begin{tcolorbox}
 	{\bf Syntax}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	UART config <config key> [<arg>]
+	uart config <config key> [<arg>]
 
 	\medskip
 	{\bf Description}
@@ -628,7 +628,7 @@ The UART can be used to send and recive UART characters.
 	ERR Invalid argument
 \end{tcolorbox}
 
-\subsubsubsection{UART config baudrate [<baudrate>]}
+\subsubsubsection{uart config baudrate [<baudrate>]}
 \begin{tcolorbox}
 	{\bf Config key}
 
@@ -649,7 +649,7 @@ The UART can be used to send and recive UART characters.
 	receiving.
 \end{tcolorbox}
 
-\subsubsubsection{UART config parity [<parity>]}
+\subsubsubsection{uart config parity [<parity>]}
 \begin{tcolorbox}
 	{\bf Config key}
 
@@ -674,7 +674,7 @@ The UART can be used to send and recive UART characters.
 \end{tcolorbox}
 
 
-\subsubsubsection{UART config stopbits [<stopbits>]}
+\subsubsubsection{uart config stopbits [<stopbits>]}
 \begin{tcolorbox}
 	{\bf Config key}
 

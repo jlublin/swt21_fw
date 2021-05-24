@@ -381,108 +381,154 @@ enqueued on the transmit buffer immediately after a "CAN send" command has been 
 	Example: \texttt{CAN RX: 74e\#8e98}
 \end{tcolorbox}
 
-
-
-\begin{comment}
-
 \section{LIN}
-LIN commands
-------------
-LIN send <id>
-LIN set txbuffer <n> <data>     - empty <data> disables TX buffer
 
-Unsolicited commands:
-LIN frame
-error?
+The LIN bus can be used to send and recive LIN 2.2 frames.
+When sending frames they can only be sent as single frames. Single frames are
+enqueued on the transmit buffer immediately after a "LIN single" command has been sent.
 
-\end{comment}
 
-\section{Command overview}
-\begin{verbatim}
-All command and responses are '\n'-terminated.
-<module> <command> [arguments]...
-Max length: 255 bytes
+\subsection{LIN commands}
+\subsubsection{LIN help}
+\begin{tcolorbox}
+	{\bf Syntax}
 
-Common commands:
-config <parameter> <value>... - set value(s)
-config <parameter>            - get value(s)
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	LIN help
 
-Responses
----------
-OK [data]
-ERR <reason>
+	\medskip
+	{\bf Description}
 
-ERR Invalid command
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command prints out a summary of the LIN commands.
 
-CAN commands
-------------
-CAN status
-    - OK CAN status: <rx on> <err frame count>
+	\medskip
+	{\bf Return values}
 
-CAN rx {on|off}
-CAN send <can_id>#{R|data}
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	<help text>
+\end{tcolorbox}
 
-CAN config parameters
----------------------
-baudrate - (integer) baudrate
-filter0 - (32-bit hex) filter, (32-bit hex) mask
-filter1 - (32-bit hex) filter, (32-bit hex) mask
+\subsubsection{LIN txbuf}
+\begin{tcolorbox}
+	{\bf Syntax}
 
-Unsolicited CAN commands
-------------------------
-CAN frame <can_id>#{R|data}
-CAN errframe <flag>
-\end{verbatim}
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	LIN txbuf <id>\#<data>
 
-\begin{comment}
-ADC commands
-------------
-ADC<n> off
-ADC<n> single
-ADC<n> periodic <period (us)> [offset (us)]
-ADC<n> status
-    - OK ADC<n> status: <off/single/periodic <period> <offset>>
+	\medskip
+	{\bf Description}
 
-ADC<n> config raw
-ADC<n> config raw              - OK ADC<n> raw: [on/off]
-ADC<n> config range <low> <high>
-ADC<n> config range            - OK ADC<n> range: <low> <high>
-ADC<n> config timestamp <off/on>
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command loads <data> into the send buffer for <id>.
+	\medskip \\
+	{\it id} - the LIN ID in decimal \\
+	{\it data} - is the frame data in hexadecimal \\
+	\medskip \\
+	Example: \texttt{lin txbuf 17\#02e8}
 
-Unsolicited ADC commands
-------------------------
-ADC<n> value [timestamp] <value>
+	\medskip
+	{\bf Return values}
 
-DAC commands
-------------
-DAC<n> voltage
-DAC<n> raw
-DAC<n> config range <low> <high>
-DAC<n> config range <low> <high>
-pwm?
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	ERR Invalid argument
+\end{tcolorbox}
 
-UART commands
--------------
-UART<n> send <length>
-UART<n>
-UART<n> config baudrate <baudrate>
-UART<n> config baudrate
-UART<n> config format <format>     - e.g. 8n1
-UART<n> config format
+\subsubsection{LIN single}
+\begin{tcolorbox}
+	{\bf Syntax}
 
-UART config parameters
-----------------------
-baudrate - <baudrate int32>
-format - <format string> <bits><n|o|p><1|2>
-    e.g. 8n1 for 8 bits, no parity and 1 stop bit
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	LIN single <id>
 
-Unsolicited UART commands
--------------------------
-UART<n> overrun error <n>
-UART<n> underrun error <n>
-UART<n> framing error <n>
-UART<n> parity error <n>
-\end{comment}
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command enques sending out a frame header for <id>. This command should
+	only be run on the LIN master.
+	\medskip \\
+	{\it id} - the LIN ID in decimal \\
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK
+\end{tcolorbox}
+
+\subsubsection{LIN config}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	LIN config <config key> [<arg>]
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command sets the configuration values of the LIN subsystem.
+	Leaving out an argument returns the current value(s) with the same argument
+	format.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	OK <value>... \\
+	ERR Invalid argument
+\end{tcolorbox}
+
+\subsubsubsection{LIN config rx [<id> <len> <chks-type>] | off]}
+\begin{tcolorbox}
+	{\bf Config key}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	rx [\{<id> <len> <chks-type>] | off\}]
+
+	\medskip
+	{\bf Arguments}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	<id> - LIN frame id \\
+	<len> - LIN frame len \\
+	<chks-type> - LIN frame checksum type (0: classic, 1: enhanced)
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This configuration sets the configuration for a LIN frame to receive by this
+	node. Using the off key will disable receiving this LIN frame.
+\end{tcolorbox}
+
+\subsubsubsection{LIN config tx [<id> <len> <chks-type>] | off]}
+\begin{tcolorbox}
+	{\bf Config key}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	tx [\{<id> <len> <chks-type>] | off\}]
+
+	\medskip
+	{\bf Arguments}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	<id> - LIN frame id \\
+	<len> - LIN frame len \\
+	<chks-type> - LIN frame checksum type (0: classic, 1: enhanced)
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This configuration sets the configuration for a LIN frame to transmitt by this
+	node. Using the off key will disable transmitting this LIN frame.
+\end{tcolorbox}
+
 
 
 \end{document}

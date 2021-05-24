@@ -171,13 +171,8 @@ Steps:
 
 \section{CAN}
 The CAN bus can be used to send and recive 11-bit ID CAN frames.
-When sending frames they can either be sent as single frames or as periodic
-frames. Single frames are enqueued on the transmit buffer immediately after a
-"CAN send" command has been sent. Periodic frames stores the frame data and
-configuration in one
-of eight periodic frame buffers. When enabled the periodic frame buffers will
-send its payload periodically according to its configuration.
-
+When sending frames they can only be sent as single frames. Single frames are
+enqueued on the transmit buffer immediately after a "CAN send" command has been sent.
 
 \subsection{CAN commands}
 \subsubsection{CAN help}

@@ -551,6 +551,151 @@ enqueued on the transmit buffer immediately after a "LIN single" command has bee
 	Example: \texttt{LIN RX: 13\#0e12}
 \end{tcolorbox}
 
+\section{UART}
+
+The UART can be used to send and recive UART characters.
+
+
+\subsection{UART commands}
+\subsubsection{UART help}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	UART help
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command prints out a summary of the UART commands.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	<help text>
+\end{tcolorbox}
+
+\subsubsection{UART sendline}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	UART sendline <text>
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command sends <text> over UART and ends with a newline character '\textbackslash n'.
+	\medskip \\
+	{\it text} - the line of text to send \\
+
+	\medskip
+	Example: \texttt{uart sendline Hello world!}
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	ERR Invalid argument
+\end{tcolorbox}
+
+\subsubsection{UART config}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	UART config <config key> [<arg>]
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command sets the configuration values of the UART subsystem.
+	Leaving out an argument returns the current value(s) with the same argument
+	format.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	OK <value>... \\
+	ERR Invalid argument
+\end{tcolorbox}
+
+\subsubsubsection{UART config baudrate [<baudrate>]}
+\begin{tcolorbox}
+	{\bf Config key}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	config baudrate [<baudrate>]
+
+	\medskip
+	{\bf Arguments}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	<baudrate> - UART baudrate
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This configuration sets the baudrate for the UART for both transmitting and
+	receiving.
+\end{tcolorbox}
+
+\subsubsubsection{UART config parity [<parity>]}
+\begin{tcolorbox}
+	{\bf Config key}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	config parity [<parity>]
+
+	\medskip
+	{\bf Arguments}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	<parity> - UART parity, (n: none, e: even, o: odd)
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This configuration sets the parity for the UART for both transmitting and
+	receiving.
+
+	\medskip
+	Example: \texttt{uart config parity e} will set even parity
+\end{tcolorbox}
+
+
+\subsubsubsection{UART config stopbits [<stopbits>]}
+\begin{tcolorbox}
+	{\bf Config key}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	config stopbits [<stopbits>]
+
+	\medskip
+	{\bf Arguments}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	<stopbits> - UART stopbits
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This configuration sets the number of stopbits for the UART for both transmitting and
+	receiving.
+\end{tcolorbox}
+
+
 
 
 \end{document}

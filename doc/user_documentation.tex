@@ -529,6 +529,28 @@ enqueued on the transmit buffer immediately after a "LIN single" command has bee
 	node. Using the off key will disable transmitting this LIN frame.
 \end{tcolorbox}
 
+\subsection{Unsolicited LIN commands}
+
+\subsubsection{LIN RX}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	LIN RX: <id>\#<data>
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command is sent when the system receives a LIN frame.
+	\medskip \\
+	{\it id} - the LIN ID in decimal \\
+	{\it data} - is the frame data in hexadecimal
+
+	\medskip
+	Example: \texttt{LIN RX: 13\#0e12}
+\end{tcolorbox}
+
 
 
 \end{document}

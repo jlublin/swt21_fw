@@ -1,0 +1,8 @@
+To build the firmware run
+$ make
+
+To build and upload the firmware run
+$ make upload
+
+To configure the RTOS run
+$ make menuconfig

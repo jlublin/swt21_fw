@@ -695,6 +695,28 @@ The UART can be used to send and recive UART characters.
 	receiving.
 \end{tcolorbox}
 
+\subsection{Unsolicited UART commands}
+
+\subsubsection{UART}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	UART: <byte>
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command is sent when the system receives a byte on UART.
+	\medskip \\
+	{\it byte} - the byte received, hexadecimal if < 0x20, otherwise printed as ASCII.
+
+	\medskip
+	Example: \texttt{UART: 0x0a} \\
+	Example: \texttt{UART: H}
+\end{tcolorbox}
+
 \section{ADC}
 
 The ADC can be used to measure voltages, both static and dynamic. It can take

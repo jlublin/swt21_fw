@@ -169,6 +169,76 @@ Steps:
 \item
 \end{enumerate}
 
+\section{LED}
+The LED can be used to control the LED on the board which may be used to
+identify which board is currently connected.
+
+\subsection{LED commands}
+\subsubsection{led help}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	led help
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command prints out a summary of the LED commands.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	<help text>
+\end{tcolorbox}
+
+\subsubsection{led \{on|off\}}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	led \{on|off\}
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command turns the LED on or off.
+	Default state is off.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK
+\end{tcolorbox}
+
+\subsubsection{led blink [half period]}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	led blink [half period]
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command starts blinking the LED staying on and off for half period
+	milliseconds. If ommited the default time of 500 ms is used.
+	\medskip \\
+	{\it half period} - the time spent in on or off state respectively in milliseconds \\
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK
+\end{tcolorbox}
+
 \section{CAN}
 The CAN bus can be used to send and recive 11-bit ID CAN frames.
 When sending frames they can only be sent as single frames. Single frames are

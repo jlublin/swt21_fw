@@ -1,3 +1,6 @@
+This firmware requires PlatformIO, to install PlatformIO run
+$ pip install platformio
+
 To build the firmware run
 $ make
 

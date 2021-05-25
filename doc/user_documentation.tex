@@ -960,7 +960,7 @@ ADC configured in 10:1 voltage division. \\
 	{\bf Description}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	This command sets the configuration values of the UART subsystem.
+	This command sets the configuration values of the ADC subsystem.
 	Leaving out an argument returns the current value(s) with the same argument
 	format.
 
@@ -1042,6 +1042,158 @@ ADC configured in 10:1 voltage division. \\
 	Example: \texttt{\vtop{ADC trig 312+3\\ 23 78 23}}
 \end{tcolorbox}
 
+\section{DAC}
+
+The DAC can be used to output voltages. It can take either voltages or raw
+values as arguments. Two channels are available
+which can be accessed using \texttt{dac0} or \texttt{dac1}.
+
+Each channel may be configured in hardware using jumpers to either use 1x
+voltage scaling with an output voltage range of 0-3 V or 10x scaling with a
+voltage range of 0-12 V. Note: >2 V requires 12 V rail to work correctly.
+
+The submodule uses the following calibration values for converting raw DAC values to
+voltages using a linear mapping.
+
+\medskip
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{4cm}|X|}
+\hline
+Calibration variable & Description \\
+\hline
+dac<n>\_min\_1x & the measured output voltage at raw value 0 with 1x multiplier
+configuration. \\
+\hline
+dac<n>\_max\_1x & the measured output voltage at raw value 255 with 1x multiplier
+configuration. \\
+\hline
+dac<n>\_min\_10x & the measured output voltage at raw value 0 with 10x multiplier
+configuration. \\
+\hline
+dac<n>\_max\_10x & the measured output voltage at raw value 255 with 10x multiplier
+configuration. \\
+\hline
+\end{tabularx}
+
+\subsection{DAC commands}
+\subsubsection{dac<n> help}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	dac<n> help
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command prints out a summary of the ADC commands.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	<help text>
+\end{tcolorbox}
+
+\subsubsection{dac<n> voltage <voltage>}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	dac<n> voltage <voltage>
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command sets DAC channel n to the specified voltage. \\
+	\medskip
+	{\it n} - the ADC channel number, 0 or 1 \\
+	{\it voltage} - the DAC voltage requested \\
+	\medskip
+	Example: \texttt{dac0 1.4}
+
+	\medskip
+	{\bf Return values}
+	OK
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK
+\end{tcolorbox}
+
+\subsubsection{dac<n> raw <value>}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	dac<n> raw <value>
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command sets DAC channel n to the specified raw value. \\
+	\medskip
+	{\it n} - the ADC channel number, 0 or 1 \\
+	{\it value} - the DAC raw value requested in decimal (0-255) \\
+	\medskip
+	Example: \texttt{dac0 12}
+
+	\medskip
+	{\bf Return values}
+	OK
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK
+\end{tcolorbox}
+
+\subsubsection{dac<n> config}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	dac<n> config <config key> [<arg>]
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command sets the configuration values of the DAC subsystem.
+	Leaving out an argument returns the current value(s) with the same argument
+	format.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	OK <value>... \\
+	ERR Invalid argument
+\end{tcolorbox}
+
+\subsubsubsection{dac<n> config 10x [on/off]}
+\begin{tcolorbox}
+	{\bf Config key}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	config 10x [on/off]
+
+	\medskip
+	{\bf Arguments}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	on/off - whether to enable or disable 10x mode
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	When 10x mode is enabled the code will assume that the DAC channel jumper is configured
+	in 10x mode.
+\end{tcolorbox}
 
 
 

@@ -97,6 +97,16 @@ Parity: & None \\
 \hline
 \end{tabularx}
 
+To access the HCI you may use any serial port monitor of your choice, one
+recommended monitor is miniterm which is part of the pyserial Python package. To
+use it follow these steps in the command prompt/terminal:
+
+\begin{enumerate}
+\item Run \texttt{pip3 install pyserial}
+\item Run \texttt{python -m serial.tools.miniterm <COM-port> 2000000} where
+      <COM-port> is replaced with the actual COM port, e.g. COM3.
+\end{enumerate}
+
 \subsection{System requirements}
 
 The lab kit requires a computer with an USB port and is compatible with Windows,

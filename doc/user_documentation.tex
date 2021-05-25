@@ -160,13 +160,17 @@ Boot reason: <reason>
 \end{itemize}
 
 \section{Firmware update}
-To update the firmware download and install the official flash download tool from
-\url{https://www.espressif.com/en/support/download/other-tools}
+To update the firmware download and install esptool from the official Python
+repository (Python is required to be installed).
 
 Steps:
 \begin{enumerate}
-\item
-\item
+\item Start a command prompt/terminal.
+\item Run "pip3 install esptool" to install esptool.
+\item Run \texttt{esptool.py --chep esp32 --port <port> --baud 921600 write\_flash 0x10000 <firmware.bin>} (where <port> is the port in use, e.g. COM3, and <firmware.bin> is your firmware file, e.g. v1.1.bin)
+\item Press the EN and the Boot buttons on the lab kit, then release first the EN
+      button and then the Boot button.
+\item If the flash counter does not start retry the last step again.
 \end{enumerate}
 
 \section{LED}

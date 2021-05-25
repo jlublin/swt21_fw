@@ -1015,6 +1015,34 @@ ADC configured in 10:1 voltage division. \\
 	being enabled, otherwise 1:1 scaling will be used.
 \end{tcolorbox}
 
+\subsection{Unsolicited ADC commands}
+
+\subsubsection{ADC trig <start>+<len>}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	ADC trig <start>+<len> \\
+	<value> ...
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command is sent after an ADC trigger has been found. If all samples
+	requested before trigger was stored then the first command will start at 0,
+	otherwise it will start at a higher number. The trigger position is found at
+	index n from the ''ADC trig'' command.
+	\medskip \\
+	{\it start} - the start index of values in this command
+	{\it len} - the number of values in this command
+	{\it value} - the raw value in hexadecimal
+
+	\medskip
+	Example: \texttt{\vtop{ADC trig 312+3\\ 23 78 23}}
+\end{tcolorbox}
+
+
 
 
 

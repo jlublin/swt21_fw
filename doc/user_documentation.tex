@@ -1088,7 +1088,7 @@ configuration. \\
 	{\bf Description}
 
 	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
-	This command prints out a summary of the ADC commands.
+	This command prints out a summary of the DAC commands.
 
 	\medskip
 	{\bf Return values}
@@ -1194,6 +1194,105 @@ configuration. \\
 	When 10x mode is enabled the code will assume that the DAC channel jumper is configured
 	in 10x mode.
 \end{tcolorbox}
+
+\section{Calibration}
+
+The calibration subsystem is used to store and retreive calibration values. The
+values are retained after a firmware upgrade.
+
+All values are stored as unsigned 32 bit integers. Floating point values are
+used by converting them to the corresponding 32 bit unsigned integer on a
+little-endian system.
+
+\subsection{Calibration commands}
+\subsubsection{calibration help}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	calibration help
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command prints out a summary of the calibration commands.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK \\
+	<help text>
+\end{tcolorbox}
+
+\subsubsection{calibration list}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	calibration list
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command prints out all the calibration values and their current values.
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK
+\end{tcolorbox}
+
+\subsubsection{calibration write <parameter> <value>}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	calibration write <parameter> <value>
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command writes a new value to a parameter.
+	\medskip
+	{\it parameter} - the parameter to update \\
+	{\it value} - the value to set \\
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK
+\end{tcolorbox}
+
+\subsubsection{calibration read <parameter>}
+\begin{tcolorbox}
+	{\bf Syntax}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	calibration read <parameter>
+
+	\medskip
+	{\bf Description}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	This command returns the current value of a parameter.
+	\medskip
+	{\it parameter} - the parameter to read \\
+
+	\medskip
+	{\bf Return values}
+
+	\parshape 1 1cm \dimexpr\linewidth-2cm\relax
+	OK <value> \\
+	ERR Could not read parameter
+\end{tcolorbox}
+
+
 
 
 

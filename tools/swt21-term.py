@@ -82,12 +82,11 @@ class Main:
 
 						t = [i*dt for i in range(len(values))]
 
-						print(t, values)
-
 						plt.figure(1)
 						plt.clf()
 						plt.title('')
 						plt.plot(t, values)
+						plt.grid()
 						plt.show()
 
 			else:

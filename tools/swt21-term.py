@@ -87,6 +87,8 @@ class Main:
 						plt.title('')
 						plt.plot(t, values)
 						plt.grid()
+						plt.xlabel('Time (µs)')
+						plt.ylabel('Raw ADC value (0-255)')
 						plt.show()
 
 			else:

@@ -156,7 +156,6 @@ static int parse_frame_format(struct lin_frame *frame, const char *frame_str)
 
 	memset(frame, 0, sizeof(*frame));
 	frame->id = id;
-	config.frame_len[id] = len;
 	for(int i = 0; i < len; i++)
 		frame->data[i] = data[i];
 
@@ -311,8 +310,10 @@ void lin_command()
 
 			len = atoi(arg);
 
-			if(len > 8 || id < 1)
+			if(len > 8 || len < 1)
 				goto einval;
+
+			config.frame_len[id] = len;
 
 			/* Read chks argument */
 			arg = strtok(NULL, " ");
@@ -375,8 +376,10 @@ void lin_command()
 
 			len = atoi(arg);
 
-			if(len > 8 || id < 1)
+			if(len > 8 || len < 1)
 				goto einval;
+
+			config.frame_len[id] = len;
 
 			/* Read chks argument */
 			arg = strtok(NULL, " ");

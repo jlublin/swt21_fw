@@ -4,9 +4,10 @@ GIT_REV = $(shell git rev-parse HEAD)
 
 # Create config.h
 CONFIG_H = src/config.h
-CONFIG = "\#define GIT_TAG \"$(GIT_TAG)\"\\n\#define GIT_REV \"$(GIT_REV)\""
+CONFIG_1 = "\#define GIT_TAG \"$(GIT_TAG)\""
+CONFIG_2 = "\#define GIT_REV \"$(GIT_REV)\""
 $(shell [ -f $(CONFIG_H) ] || touch $(CONFIG_H))
-$(shell [ -z "$$(echo "$(CONFIG)" | diff $(CONFIG_H) -)" ] || echo "$(CONFIG)" > $(CONFIG_H))
+$(shell [ -z "$$(echo "$(CONFIG)" | diff $(CONFIG_H) -)" ] || echo "$(CONFIG_1)" > $(CONFIG_H); echo "$(CONFIG_2)" >> $(CONFIG_H))
 
 all:
 	pio run

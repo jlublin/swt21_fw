@@ -163,14 +163,22 @@ void dac_command(int dac)
 		}
 		else
 		{
-			if(voltage < 0 || voltage > 3.3)
-				goto einval;
-
-			uint8_t value =
+			int value =
 				(voltage - dac_config[dac].min_1x) * 255 /
 				(dac_config[dac].max_1x - dac_config[dac].min_1x);
 
-			dac_output_voltage(dac_channel[dac], value);
+			uint8_t dac_value;
+
+			if(value < 0)
+				dac_value = 0;
+
+			else if(value > 255)
+				dac_value = 255;
+
+			else
+				dac_value = value;
+
+			dac_output_voltage(dac_channel[dac], dac_value);
 		}
 	}
 	else if(strcmp(cmd, "raw") == 0)

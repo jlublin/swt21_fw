@@ -75,7 +75,7 @@ void led_command()
 			"\n"
 			"led on - \n"
 			"led off - \n"
-			"lin blink [half period] - half period in ms (int, default: 500)\n");
+			"led blink [half period] - half period in ms (int, default: 500)\n");
 	}
 	else if(strcmp(cmd, "on") == 0)
 	{

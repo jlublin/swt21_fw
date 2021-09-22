@@ -19,6 +19,7 @@
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/queue.h>
+#include <freertos/event_groups.h>
 #include <driver/can.h>
 #include <nvs_flash.h>
 #include <esp_task_wdt.h>
@@ -60,6 +61,10 @@ const uint8_t CAN_FLAG_RX_ON = 1 << 1;
 
 static QueueHandle_t can_rx_queue;
 
+static EventBits_t can_reinstall_done = 1 << 0;
+
+static EventGroupHandle_t can_event_group;
+
 struct can_rx_event
 {
 	uint8_t event;
@@ -68,7 +73,8 @@ struct can_rx_event
 enum
 {
 	EVENT_CAN_RX_OFF = 0,
-	EVENT_CAN_RX_ON = 1
+	EVENT_CAN_RX_ON = 1,
+	EVENT_CAN_REINSTALL = 2
 };
 
 
@@ -101,6 +107,8 @@ int can_init()
 		printf("ERR CAN init failed!\n");
 		return -1;
 	}
+
+	can_event_group = xEventGroupCreate();
 
 	can_config.flags |= CAN_FLAG_INIT;
 
@@ -244,10 +252,8 @@ void can_command()
 					goto einval;
 
 				can_config.timing.brp = value;
-				if(can_reinstall() < 0)
-					printf("ERR Unknown error\n");
-				else
-					printf("OK\n");
+
+				can_send_reinstall();
 			}
 		}
 		else if(strcmp(arg, "tseg_1") == 0)
@@ -265,10 +271,8 @@ void can_command()
 					goto einval;
 
 				can_config.timing.tseg_1 = value;
-				if(can_reinstall() < 0)
-					printf("ERR Unknown error\n");
-				else
-					printf("OK\n");
+
+				can_send_reinstall();
 			}
 		}
 		else if(strcmp(arg, "tseg_2") == 0)
@@ -286,10 +290,8 @@ void can_command()
 					goto einval;
 
 				can_config.timing.tseg_2 = value;
-				if(can_reinstall() < 0)
-					printf("ERR Unknown error\n");
-				else
-					printf("OK\n");
+
+				can_send_reinstall();
 			}
 		}
 		else if(strcmp(arg, "sjw") == 0)
@@ -308,10 +310,7 @@ void can_command()
 
 				can_config.timing.sjw = value;
 
-				if(can_reinstall() < 0)
-					printf("ERR Unknown error\n");
-				else
-					printf("OK\n");
+				can_send_reinstall();
 			}
 		}
 		else
@@ -350,6 +349,19 @@ void can_rx_on()
 	xQueueSendToBack(can_rx_queue, &event, 0);
 }
 
+void can_send_reinstall()
+{
+	struct can_rx_event event =
+	{
+		.event = EVENT_CAN_REINSTALL
+	};
+
+	xQueueSendToBack(can_rx_queue, &event, 0);
+
+	/* Wait for reinstallation done */
+	xEventGroupWaitBits(can_event_group, can_reinstall_done, 1, 1, 1000 * portTICK_PERIOD_MS);
+}
+
 void can_rx_thread(void *parameters)
 {
 	/* Check that CAN initialized correctly */
@@ -365,7 +377,7 @@ void can_rx_thread(void *parameters)
 	while(1)
 	{
 		can_message_t msg;
-		while(can_receive(&msg, 100) == ESP_OK)
+		while(can_receive(&msg, 10) == ESP_OK)
 		{
 			if(rx_running)
 			{
@@ -393,6 +405,16 @@ void can_rx_thread(void *parameters)
 			{
 				rx_running = 1;
 				printf("OK\n");
+			}
+
+			else if(event.event == EVENT_CAN_REINSTALL)
+			{
+				if(can_reinstall() < 0)
+					printf("ERR Unknown error\n");
+				else
+					printf("OK\n");
+
+				xEventGroupSetBits(can_event_group, can_reinstall_done);
 			}
 		}
 	}

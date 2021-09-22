@@ -144,6 +144,8 @@ int parse_message_format(can_message_t *msg, const char *fmt)
 	memset(msg, 0, sizeof(*msg));
 	sscanf(fmt, "%x#%c", &id, &remote);
 
+	msg->flags |= CAN_MSG_FLAG_SS;
+
 	if(remote == 'R')
 	{
 		msg->flags |= CAN_MSG_FLAG_RTR;
@@ -231,8 +233,7 @@ void can_command()
 			 * then the bus will go into an error state, restart it by
 			 * reinstalling it.
 			 */
-			if(err == ESP_ERR_INVALID_STATE)
-				can_send_reinstall();
+			can_send_reinstall();
 
 			return;
 		}
@@ -422,6 +423,18 @@ void can_rx_thread(void *parameters)
 					printf("ERR Unknown error\n");
 				else
 					printf("OK\n");
+
+				/* Also perform a full recovery which helps on bus-off recovery */
+				can_initiate_recovery();
+
+				while(1)
+				{
+					twai_status_info_t info;
+					twai_get_status_info(&info);
+
+					if(info.state != CAN_STATE_RECOVERING)
+						break;
+				}
 
 				xEventGroupSetBits(can_event_group, can_reinstall_done);
 			}

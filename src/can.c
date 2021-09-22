@@ -225,6 +225,15 @@ void can_command()
 		if(err != ESP_OK)
 		{
 			printf("ERR Transmit failed!\n");
+
+			/*
+			 * If we get to many transmission errors due to non-acked frames
+			 * then the bus will go into an error state, restart it by
+			 * reinstalling it.
+			 */
+			if(err == ESP_ERR_INVALID_STATE)
+				can_send_reinstall();
+
 			return;
 		}
 

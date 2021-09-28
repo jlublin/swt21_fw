@@ -1,0 +1,46 @@
+/*@!Encoding:1252*/
+includes
+{
+}
+
+variables
+{
+}
+
+on message CAN1.*
+{
+	int i;
+	byte data[13];
+
+	data[0] = (this.ID >>  0) & 0xff;
+	data[1] = (this.ID >>  8) & 0xff;
+	data[2] = (this.ID >> 16) & 0xff;
+	data[3] = (this.ID >> 24) & 0xff;
+
+	data[4] = this.DLC;
+
+	for(i = 0; i < this.DLC; i++)
+		data[5+i] = this.byte(i);
+
+	sysSetVariableData(sysvar::FDX::CanFrameSend, data, 13);
+
+	FDXTriggerDataGroup(1001);
+}
+
+on sysvar_update FDX::CanFrameRecv
+{
+	byte data[13];
+	long count;
+	message 0 msg;
+	int i;
+
+	sysGetVariableData(sysvar::FDX::CanFrameRecv, data, count);
+
+	msg.ID = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+	msg.DLC = data[4];
+
+	for(i = 0; i < msg.DLC; i++)
+		msg.byte(i) = data[5+i];
+
+	output(msg);
+}

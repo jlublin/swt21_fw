@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<canoefdxdescription version="1.0">
+  <datagroup groupID="1001" size="17">
+    <identifier>CanFrameSend</identifier>
+    <item offset="0" size="17" type="bytearray">
+      <identifier></identifier>
+      <sysvar name="CanFrameSend" namespace="FDX" value="raw" />
+    </item>
+  </datagroup>
+  <datagroup groupID="1002" size="17">
+    <identifier>CanFrameRecv</identifier>
+    <item offset="0" size="17" type="bytearray">
+      <identifier></identifier>
+      <sysvar name="CanFrameRecv" namespace="FDX" value="raw" />
+    </item>
+  </datagroup>
+</canoefdxdescription>
